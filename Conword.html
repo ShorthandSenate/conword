@@ -86,7 +86,7 @@
       <div id="container">
       <textarea id="textInput" rows="10" cols="50"></textarea><br>
       <div class="button-container">
-        <button onclick="arabicNumberToThaiNumberAndReplace()">แปลงและลบคำ</button>
+        <button onclick="arabicNumberToThaiNumberAndReplace(); processPlusSigns();">แปลงและลบคำ</button>
         <button onclick="findAndAlertErrors()">ตรวจคำผิด</button>
         <button onclick="confirmClearText()">ล้างข้อความ</button>
         <button onclick="copyText()">คัดลอก</button>
@@ -141,6 +141,7 @@
     text = text.replace(/ๆ(ๆ)+/g, 'ๆ');
     text = text.replace(/\.\s\.\s\.\s/g, '. ');
     text = text.replace(/หน้าที่\s+(\d+)/g, 'หน้า $1');
+    
   
   
     
@@ -211,8 +212,21 @@
     
     document.getElementById("textInput").value = text;
 }
+//หาเครื่องหมาย + และขึ้นหน้าใหม่
+function processPlusSigns() {
+  var textArea = document.getElementById("textInput");
+  var text = textArea.value;
+
+  // หาคำที่มีเครื่องหมาย "+"
+  //var newText = text.replace(/\+/g, "+\n");
+  var newText = text.replace(/\+/g, "\n\t\t   :   ");
+  // นำข้อความที่แก้ไขแล้วใส่กลับใน text area
+  textArea.value = newText;
+}
+
 
 function performAdditionalReplacements(text) {
+  text = text.replace(/\+/g, "\n+");
     text = text.replace(/นะครับ/g, "");
     text = text.replace(/เนาะ/g, "");
     text = text.replace(/มั้ย/g, "");
@@ -407,6 +421,7 @@ function performAdditionalReplacements(text) {
 
 } 
     function findAndAlertErrors() {
+      
       var searchTexts = [
       "ตามาตรา", "มีมี", "จเรณักณิ์","บชก.","แยกยะ","สุดอันท้าย","กลไกล","กำหราบ","สุโขทั่ว","ส่งข้าว","บังคับบัญชี",
   "๒๕๒๕๖๕","สวรรณี","ครับครับ","หน่วนงาน","พรก.","พรป.","ประโต","แลกหน้า","ชั่งสังเกต","ป.ป.ง.",
