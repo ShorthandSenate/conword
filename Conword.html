@@ -1,10 +1,15 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
+  
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Conword</title>
+    <div class="footer">
+      เวอร์ชัน 1.0.02  26/03/67
+    </div>
     <style>
+
       body {
         background-color: #b5bdc3; /* พื้นหลังเว็บเป็นสีเทาเข้ม */
         display: flex;
@@ -16,34 +21,32 @@
       }
     
       #container {
-    width: 100%;
-    display: flex;
-    flex-direction: column; /* เปลี่ยนเป็นการจัดเรียงในแนวดิ่ง */
-    justify-content: center;
-    align-items: center;
-    height: 80vh;
-    margin: 0;
-    padding-top: 5px; /* ระยะห่างด้านบน */
-}
+        width: 100%;
+        display: flex;
+        flex-direction: column; /* เปลี่ยนเป็นการจัดเรียงในแนวดิ่ง */
+        justify-content: center;
+        align-items: center;
+        height: 80vh;
+        margin: 0;
+        padding-top: 5px; /* ระยะห่างด้านบน */
+      }
 
-#textInput {
-    width: 80%;
-    max-width: 850px;
-    height: 90vh; /* กำหนดความสูงของ text editor ให้เป็น 80% ของความสูงของหน้าจอ */
-    max-height: 500px; /* กำหนดความสูงสูงสุดของ text editor เป็น 500px */
-    padding: 35px;
-    font-size: 16px;
-    border-radius: 30px;
-    resize: none;
-    box-sizing: border-box;
-    background-color: #f8f8f8;
-    outline: none;
-    border: none; /* กำหนดให้ไม่มีเส้นขอบ */
-    box-shadow: 0 0 50px rgba(0, 0, 0, 0.1); /* เพิ่มเงาฟุ้งๆ */
-}
+      #textInput {
+        width: 80%;
+        max-width: 850px;
+        height: 90vh; /* กำหนดความสูงของ text editor ให้เป็น 80% ของความสูงของหน้าจอ */
+        max-height: 500px; /* กำหนดความสูงสูงสุดของ text editor เป็น 500px */
+        padding: 35px;
+        font-size: 16px;
+        border-radius: 30px;
+        resize: none;
+        box-sizing: border-box;
+        background-color: #f8f8f8;
+        outline: none;
+        border: none; /* กำหนดให้ไม่มีเส้นขอบ */
+        box-shadow: 0 0 50px rgba(0, 0, 0, 0.1); /* เพิ่มเงาฟุ้งๆ */
+      }
 
-
-    
       .button-container {
         display: flex;
         justify-content: center; /* จัดวางปุ่มให้อยู่ตรงกลาง */
@@ -53,6 +56,7 @@
       .button-container button {
         padding: 10px 20px;
         background-color: #2298e2; /* สีพื้นหลังของปุ่ม */
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* เพิ่มเงา */
         color: #ffffff;
         border: none;
         border-radius: 5px;
@@ -71,7 +75,33 @@
         background-color: #1d638e; /* เปลี่ยนสีเมื่อ click */
         transform: translateY(0);
       }
-    
+
+      .status-bar {
+      background-color: rgb(23, 182, 255);
+      color: #ffffff;
+      padding: 10px;
+      position: fixed;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 9999; /* ให้แถบสถานะอยู่บนสุด */
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* เพิ่มเงา */
+      border-radius: 5px; /* เพิ่มขอบมน */
+      font-family: Arial, sans-serif; /* เลือกแบบอักษร */
+      font-size: 14px; /* ขนาดอักษร */
+    }
+
+      .footer {
+      position: fixed;
+      bottom: 0;
+      right: 0;
+      color: rgb(0, 0, 0); /* สีข้อความ */
+      padding: 10px; /* การเพิ่มช่องว่างรอบขอบของ footer */
+      font-size: 12px;   /* ขนาดอักษร */
+
+    }
+
+
       @media (max-width: 600px) {
         #container {
           width: 90%; /* ปรับขนาด text editor เมื่ออยู่ในหน้าจอขนาดเล็ก */
@@ -83,6 +113,7 @@
   <link rel="icon" href="./icon.png">
 </head>
 <body>
+    
       <div id="container">
       <textarea id="textInput" rows="10" cols="50"></textarea><br>
       <div class="button-container">
@@ -90,10 +121,12 @@
         <button onclick="findAndAlertErrors()">ตรวจคำผิด</button>
         <button onclick="confirmClearText()">ล้างข้อความ</button>
         <button onclick="copyText()">คัดลอก</button>
+       
+
       </div>
       <p id="output"></p>
     </div>
-
+    
   <script>
     function arabicNumberToThaiNumberAndReplace() {
       var text = document.getElementById("textInput").value;
@@ -108,18 +141,6 @@
 
     // เปลี่ยนเวลาที่มีรูปแบบ xx:xx น เป็น xx.xx นาฬิกา
     text = text.replace(/(\d{2}):(\d{2}) น/g, "$1.$2 นาฬิกา");
-
-    // เปลี่ยนเวลาที่มีรูปแบบ xx:xx น เป็น xx.xx นาฬิกา
-    text = text.replace(/(\d{2}):(\d{2}) วน/g, "$1.$2 นาฬิกา");
-
-    // เปลี่ยนเวลาที่มีรูปแบบ xx:xx น เป็น xx.xx นาฬิกา
-    text = text.replace(/(\d{2}):(\d{2})\s+น/g, "$1.$2 นาฬิกา");
-
-    // เปลี่ยนเวลาที่มีรูปแบบ xx:xx ว น เป็น xx.xx นาฬิกา
-    text = text.replace(/(\d{2}):(\d{2}) ว\s*น/g, "$1.$2 นาฬิกา");
-
-    // เปลี่ยน " น " เป็น " นาฬิกา "
-    text = text.replace(/(\d{2}):(\d{2})\s+น\s+/g, "$1.$2 นาฬิกา ");
 
       // ลบคำที่พิมพ์ซ้ำ
     text = text.replace(/นำ(นำ)+/g, 'นำ');
@@ -414,12 +435,22 @@ function performAdditionalReplacements(text) {
 
     // เปลี่ยน " น " เป็น " นาฬิกา "
     text = text.replace(/(\d{2}):(\d{2})\s+น\s+/g, "$1.$2 นาฬิกา ");
-    alert("แก้ไขข้อความเรียบร้อยแล้ว!"); 
-    return text;
-    
-    
+    //alert("แก้ไขข้อความเรียบร้อยแล้ว!"); 
+    // สร้างแถบสถานะ
+    var statusElement = document.createElement("div");
+    statusElement.textContent = "แก้ไขข้อความเรียบร้อยแล้ว!";
+    statusElement.classList.add("status-bar"); // เพิ่มคลาสสำหรับใส่ CSS
+    document.body.appendChild(statusElement);
 
-} 
+    // หายไปใน 7 วินาที
+      setTimeout(function() {
+      statusElement.style.display = "none";
+    }, 7000);
+
+    return text;
+}
+
+  
     function findAndAlertErrors() {
       
       var searchTexts = [
@@ -476,10 +507,21 @@ function performAdditionalReplacements(text) {
     var textArea = document.getElementById("textInput");
     textArea.select();
     document.execCommand("copy");
-    alert("คัดลอกข้อความทั้งหมดแล้ว!");
+        // สร้างแถบสถานะ
+        var statusElement = document.createElement("div");
+    statusElement.textContent = "คัดลอกข้อความทั้งหมดแล้ว!";
+    statusElement.classList.add("status-bar"); // เพิ่มคลาสสำหรับใส่ CSS
+    document.body.appendChild(statusElement);
+
+    // หายไปใน 7 วินาที
+      setTimeout(function() {
+      statusElement.style.display = "none";
+    }, 7000);
+
     }
 
    
   </script>
 </body>
+
 </html>
