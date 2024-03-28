@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Conword</title>
     <div class="footer">
-      เวอร์ชัน 1.0.02  26/03/67
+      เวอร์ชัน 1.0.03  28/03/67
     </div>
     <style>
 
@@ -223,7 +223,8 @@
     { pattern: /สวทช(?!\.)/g, newText: " สวทช. " },
 
     //ลบช่องว่างที่มากกว่า 1 เคาะ จะต้องอยู่ล่างสุดเสมอ ****************
-    { pattern: /\s+/g, newText: " " },
+    { pattern: /(?:\r\n?|\n){2,}/g, newText: "\n" },
+
 
     ];
 
@@ -233,21 +234,22 @@
     
     document.getElementById("textInput").value = text;
 }
-//หาเครื่องหมาย + และขึ้นหน้าใหม่
 function processPlusSigns() {
   var textArea = document.getElementById("textInput");
   var text = textArea.value;
 
   // หาคำที่มีเครื่องหมาย "+"
-  //var newText = text.replace(/\+/g, "+\n");
-  var newText = text.replace(/\+/g, "\n\t\t   :   ");
+  var newText = text.replace(/\+/g, "\n\t\t");
+
+  // ลบเคาะบรรทัดใหม่เมื่อมีบรรทัดว่างหลายบรรทัดซ้อนๆ กัน
+  newText = newText.replace(/(?:\r\n?|\n){2,}/g, "\n");
+
   // นำข้อความที่แก้ไขแล้วใส่กลับใน text area
   textArea.value = newText;
 }
 
 
 function performAdditionalReplacements(text) {
-  text = text.replace(/\+/g, "\n+");
     text = text.replace(/นะครับ/g, "");
     text = text.replace(/เนาะ/g, "");
     text = text.replace(/มั้ย/g, "");
@@ -310,7 +312,7 @@ function performAdditionalReplacements(text) {
     text = text.replace(/อายุอเมริกา/g, "อนุกรรมาธิการ");
     text = text.replace(/มนุษย์ชน/g, "มนุษยชน");
     text = text.replace(/ค่อนข้างเยอะ/g, "ค่อนข้างมาก");
-    text = text.replace(/:/g, ".");
+    //text = text.replace(/:/g, ".");
     text = text.replace(/รถค่า/g, "ลดค่า");
     text = text.replace(/แจ้งจากที่/g, "แจ้งต่อที่");
     text = text.replace(/ระเบียบเวลา/g, "ระเบียบวาระ");
