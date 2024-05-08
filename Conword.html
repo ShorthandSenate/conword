@@ -7,7 +7,7 @@
     <title>Conword</title>
     <link rel="icon" href="./icon.png">
     <div class="footer">
-      เวอร์ชัน 01.02.00  03/05/67
+      เวอร์ชัน 01.02.01  08/05/67
     </div>
     <style>
 
@@ -220,7 +220,7 @@
 
     //เติมจุด***********************************************
     { pattern: /สตง(?!\.)/g, newText: " สตง. " },
-    { pattern: /พ.ร.บ(?!\.)/g, newText: " พ.ร.บ. " },
+    { pattern: /(\b)พ\.ร\.บ(?!\.)/g, newText: "$1พ.ร.บ. " },
     { pattern: /กกต(?!\.|ิกา)/g, newText: " กกต." },
     { pattern: /อปท(?!\.)/g, newText: " อปท. " },
     { pattern: /คสช(?!\.)/g, newText: " คสช. " },
@@ -556,8 +556,6 @@ function performAdditionalReplacements(text) {
     }, 7000);
 
     }
-
-   
   </script>
 </body>
 
