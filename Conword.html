@@ -4,10 +4,12 @@
   
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.css">
     <title>Conword</title>
     <link rel="icon" href="./icon.png">
     <div class="footer">
-      เวอร์ชัน 01.02.01  08/05/67
+      เวอร์ชัน 02.00.00  20/05/67 
     </div>
     <style>
 
@@ -33,10 +35,12 @@
       }
 
       #textInput {
+        display: flex;
+        justify-content: center;
         width: 80%;
         max-width: 850px;
         height: 90vh; /* กำหนดความสูงของ text editor ให้เป็น 80% ของความสูงของหน้าจอ */
-        max-height: 500px; /* กำหนดความสูงสูงสุดของ text editor เป็น 500px */
+        max-height: 560px; /* กำหนดความสูงสูงสุดของ text editor เป็น 500px */
         padding: 35px;
         font-size: 16px;
         border-radius: 30px;
@@ -46,12 +50,16 @@
         outline: none;
         border: none; /* กำหนดให้ไม่มีเส้นขอบ */
         box-shadow: 0 0 50px rgba(0, 0, 0, 0.1); /* เพิ่มเงาฟุ้งๆ */
+        margin-right: 1%;
+   
       }
 
       .button-container {
         display: flex;
         justify-content: center; /* จัดวางปุ่มให้อยู่ตรงกลาง */
         margin-top: 0px; /* ระยะห่างของปุ่ม */
+        padding: 1%; /* ใช้หน่วย vw เพื่อกำหนดขนาด padding ของปุ่ม */
+        font-size: 1%; /* ใช้หน่วย vw เพื่อกำหนดขนาดตัวอักษรของปุ่ม */
       }
     
       .button-container button {
@@ -109,27 +117,266 @@
         }
       }
 
+    /*css ของ pastboard////////////////////////////////////////////*/
+    #clipboard {
+    max-width: 100%;
+    width: 600px; /* ขนาดเริ่มต้น */
+    height: 90vh; 
+    max-height: 700px;
+    border: 1px solid #ccc;
+    padding: 10px;
+    padding-left: 25px;
+    margin-bottom: 20px;
+    border-radius: 20px;
+    box-sizing: border-box;
+    background-color: #f8f8f8;
+    outline: none;
+    border: none; /* กำหนดให้ไม่มีเส้นขอบ */
+    box-shadow: 0 0 50px rgba(0, 0, 0, 0.1); /* เพิ่มเงาฟุ้งๆ */
+    margin: auto;
+    margin-right: 5%;
+    overflow-y: auto; /* ควบคุมการแสดงข้อมูลที่เกินขอบด้านตลับได้ */
+    display: none;
+    gap: 0px;
+    
+}
+
+    #clipboard-heading {
+    margin-top: 20px;
+    margin-left: 5px;
+    margin-bottom: 20px; /* เพิ่มช่องว่างด้านล่าง 20px */
+    font-family: 'Arial', sans-serif; /* เปลี่ยนเป็นฟอนต์แบบมินิมอล */
+    font-size: 20px;
+    color: #0b3955;
+    position: sticky;
+    top: 0;
+    z-index: 2; /* กำหนด z-index ให้สูงกว่าปุ่ม */
+    background-color: #f8f8f8; /* เพื่อให้ส่วนหัวมีพื้นหลังสีเดียวกับคลิปบอร์ด */
+    padding: 10px 25px; /* เพิ่ม padding ด้านบนและด้านล่าง */
+    margin-left: -10px; /* ปรับขอบซ้ายของส่วนหัวให้เท่ากับขอบเส้นขอบของคลิปบอร์ด */
+    margin-right: -10px; /* ปรับขอบขวาของส่วนหัวให้เท่ากับขอบเส้นขอบของคลิปบอร์ด */    
+  }
+
+
+
+    @media only screen and (max-width: 600px) {
+        /* เปลี่ยนขนาดของคลิปบอร์ดเมื่อหน้าจอเล็กกว่า 600px */
+        #clipboard {
+            width: 90%; /* ปรับความกว้างให้เต็มขอบตามขนาดหน้าจอ */
+            height: 90%;
+        }
+    }
+
+    @media only screen and (max-width: 400px) {
+        /* เปลี่ยนขนาดของคลิปบอร์ดเมื่อหน้าจอเล็กกว่า 400px */
+        #clipboard {
+            width: 95%; /* ปรับความกว้างให้เต็มขอบตามขนาดหน้าจอ */
+            height: 95%;
+        }
+    }
+
+    h2, h3 {
+        margin-top: 0;
+    }
+
+    ul {
+        list-style-type: none;
+        padding: 0;
+    }
+
+    li {
+    width: 92%;
+    overflow: hidden;
+    text-overflow: ellipsis; /* เพิ่มเครื่องหมาย ellipsis เมื่อข้อความเกินขนาด */
+    white-space: nowrap; /* บังคับให้ข้อความไม่ขึ้นบรรทัดใหม่ */
+    border: 1px solid #d3dcff6c;
+    padding: 10px;
+    margin-bottom: 5px;
+    border-radius: 5px;
+    background-color: #d3dcff6c;
+}
+
+
+    li span {
+        cursor: pointer;
+    }
+
+    button {
+        margin-left: 1%;
+    }
+
+    button.edit, button.delete {
+        border: none;
+        background: none;
+        cursor: pointer;
+        font-size: 1em;
+    }
+
+    .delete {
+        float: right;
+        font-size: 50%; /* ปรับขนาดไอคอน */
+        color: rgba(57, 57, 57, 0.765); /* เปลี่ยนสีไอคอน */
+    }
+
+    .edit {
+        float: right;
+        color: rgba(57, 57, 57, 0.765); /* เปลี่ยนสีไอคอน */
+
+    }
+
+    button.edit, button.delete {
+        border: none;
+        background: none;
+        cursor: pointer;
+        font-size: 1em;
+    }
+
+    .action-btn {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    background-color: #2298e2; /* สีพื้นหลัง */
+    color: white; /* สีข้อความ */
+    padding: 5px 10px; /* ขนาดของปุ่ม */
+    border: none; /* ไม่มีเส้นขอบ */
+    border-radius: 6px; /* มุมของปุ่ม */
+    cursor: pointer; /* เมาส์เป็นลูกศร */
+    font-size: 0.7em;
+    margin-left: 6px;
+}
+
+
+.action-btn:hover {
+    background-color: #148dd8; /* สีพื้นหลังเมื่อโฮเวอร์ */
+}
+
+.action-btn:active {
+    background-color: #1d638e; /* สีพื้นหลังเมื่อคลิก */
+}
+
+
 
   </style>
   <link rel="icon" href="./icon.png">
 </head>
-<body>
+<body>  
     
       <div id="container">
       <textarea id="textInput" rows="10" cols="50"></textarea><br>
       <div class="button-container">
+        
         <button onclick="arabicNumberToThaiNumberAndReplace(); processPlusSigns();">แปลงและลบคำ</button>
         <button onclick="findAndAlertErrors()">ตรวจคำผิด</button>
         <button onclick="copyText()">คัดลอก</button>
         <button onclick="confirmClearText()">ล้างข้อความ</button>
-
-       
-
+        <button class="action-btn" id="toggleClipboard" onclick="toggleClipboard()">
+          <i id="clipboardIcon" class="fas fa-chevron-up"></i>
+          <span id="clipboardButtonText">เปิด/ปิด clipboard</span>
+        </button>
       </div>
       <p id="output"></p>
     </div>
+
     
+    <!-- ส่วนของ pastboard -->
+
+    <div id="clipboard">
+      <h3 id="clipboard-heading">Clipboard</h3>
+      <button class="action-btn" onclick="addItem()"><i class="fas fa-plus"></i></button>
+      <button class="action-btn" onclick="clearAll()">ล้างรายการ</button> <!-- Clear All button -->
+      <ul id="clipList">
+          <!-- List items will be added dynamically -->
+      </ul>
+  </div>
+  
   <script>
+
+var clipboard = document.getElementById("clipboard");
+function toggleClipboard() {
+  if (clipboard.style.display === "none" || clipboard.style.display === "") {
+    clipboard.style.display = "block";
+    document.getElementById("clipboardIcon").className = "fas fa-chevron-up";
+  } else {
+    clipboard.style.display = "none";
+    document.getElementById("clipboardIcon").className = "fas fa-chevron-down";
+  }
+}
+
+    // สคริปต์ของ pastboard
+    function addItem() {
+    var items = prompt("ใส่ข้อความที่คุณต้องการ");
+    if (items !== null && items.trim() !== "") {
+        var clipList = document.getElementById("clipList");
+        items.split("\n").forEach(function(item) {
+            if (item.trim() !== "") {
+                var li = document.createElement("li");
+                var span = document.createElement("span");
+                span.textContent = item.trim();
+                span.onclick = function() {
+                    copyToEditor(span);
+                };
+                li.appendChild(span);
+
+                var deleteBtn = document.createElement("button");
+                deleteBtn.innerHTML = '<i class="fas fa-trash-alt"></i>';
+                deleteBtn.className = "delete";
+                deleteBtn.onclick = function() {
+                clipList.removeChild(li);
+                };
+
+                li.appendChild(deleteBtn);
+
+                clipList.appendChild(li);
+
+                var editBtn = document.createElement("button");
+                editBtn.innerHTML = '<i class="fas fa-edit"></i>'; // ใช้ไอคอนแก้ไขจาก Font Awesome
+                editBtn.className = "edit";
+                editBtn.onclick = function() {
+                    var textEditor = document.createElement("textarea");
+                    textEditor.value = span.textContent;
+                    textEditor.style.width = "99%"; // กำหนดความกว้างของ textarea ให้เต็มตาม li
+                    textEditor.style.height = "30px"; // กำหนดความสูงของ textarea ให้เป็น 50px (ตั้งค่าตามต้องการ)
+                    li.replaceChild(textEditor, span);
+                    textEditor.focus();
+
+                    textEditor.onblur = function() {
+                        span.textContent = textEditor.value;
+                        li.replaceChild(span, textEditor);
+                        editBtn.style.display = 'inline';
+                        deleteBtn.style.display = 'inline';
+                    };
+
+                    editBtn.style.display = 'none';
+                    deleteBtn.style.display = 'none';
+                };
+                li.appendChild(editBtn);
+            }
+        });
+    }
+}
+
+function copyToEditor(item) {
+    var textEditor = document.getElementById("textInput");
+    var itemText = item.textContent.trim();
+    
+    // ตรวจสอบว่าท้ายข้อความเป็นเครื่องหมาย ":" หรือไม่
+    if (itemText.endsWith(":")) {
+        // เพิ่มการเคาะวรรคหลังเครื่องหมาย ":"
+        itemText += "   ";
+    }
+    
+    textEditor.value += itemText;
+    textEditor.focus();
+}
+
+
+function clearAll() {
+    var clipList = document.getElementById("clipList");
+    clipList.innerHTML = ""; // Clear all items
+}
+
+
+
     function arabicNumberToThaiNumberAndReplace() {
       var text = document.getElementById("textInput").value;
       text = performAdditionalReplacements(text);
@@ -215,7 +462,7 @@
     //*******************************************************************
     { pattern: /เลขา(?!นุการ|ธิการ)/g, newText: "เลขานุการ" },
     { pattern: /(?<!หม่อน)ไหม(?!ทอง|พรม|้)/g, newText: "หรือไม่" },
-    { pattern: /(?<!ป)นายก(?!รัฐมนตรี|อ|เ| |ส|ค|ศ|ิ)/g, newText: "นายกรัฐมนตรี" },
+    //{ pattern: /(?<!ป)นายก(?!รัฐมนตรี|อ|เ| |ส|ค|ศ|ิ)/g, newText: "นายกรัฐมนตรี" },
 
 
     //เติมจุด***********************************************
@@ -263,6 +510,7 @@ function processPlusSigns() {
 
 
 function performAdditionalReplacements(text) {
+    text = text.replace(/ฮะ/g, "");
     text = text.replace(/นะครับ/g, "");
     text = text.replace(/เนาะ/g, "");
     text = text.replace(/มั้ย/g, "");
