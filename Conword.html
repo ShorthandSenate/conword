@@ -9,7 +9,7 @@
     <title>Conword</title>
     <link rel="icon" href="./icon.png">
     <div class="footer">
-      เวอร์ชัน 02.00.00  20/05/67 
+      เวอร์ชัน 02.01.00  21/05/67 
     </div>
     <style>
 
@@ -63,16 +63,17 @@
       }
     
       .button-container button {
-        padding: 10px 20px;
-        background-color: #2298e2; /* สีพื้นหลังของปุ่ม */
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* เพิ่มเงา */
+        padding: 12px 13px; /* ปรับ padding เป็นค่าที่เล็กลง */
+        font-size: 80em; /* ปรับ font-size เป็นค่าที่เล็กลง */
+        background-color: #2298e2;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         color: #ffffff;
         border: none;
         border-radius: 5px;
         cursor: pointer;
-        transition: background-color 0.3s ease, transform 0.3s ease; /* เพิ่ม transition เมื่อ hover และ click */
-        margin: 0 5px; /* ระยะห่างของปุ่ม */
-        font-family: 'Sukhumvit Set', Sukhumvit Set; /* เปลี่ยนฟอนต์ของปุ่ม */
+        transition: background-color 0.3s ease, transform 0.3s ease;
+        margin: 0 5px;
+        font-family: 'Sukhumvit Set', Sukhumvit Set;
       }
     
       .button-container button:hover {
@@ -137,26 +138,41 @@
     margin-right: 5%;
     overflow-y: auto; /* ควบคุมการแสดงข้อมูลที่เกินขอบด้านตลับได้ */
     display: none;
-    gap: 0px;
-    
 }
 
-    #clipboard-heading {
-    margin-top: 20px;
-    margin-left: 5px;
-    margin-bottom: 20px; /* เพิ่มช่องว่างด้านล่าง 20px */
-    font-family: 'Arial', sans-serif; /* เปลี่ยนเป็นฟอนต์แบบมินิมอล */
+#clipboard-heading {
+    font-family: 'Arial', sans-serif;
     font-size: 20px;
     color: #0b3955;
+    padding: 9px 25px;
+    background-color: #f8f8f8; /* สีพื้นหลังของส่วนหัว */
     position: sticky;
     top: 0;
-    z-index: 2; /* กำหนด z-index ให้สูงกว่าปุ่ม */
-    background-color: #f8f8f8; /* เพื่อให้ส่วนหัวมีพื้นหลังสีเดียวกับคลิปบอร์ด */
-    padding: 10px 25px; /* เพิ่ม padding ด้านบนและด้านล่าง */
-    margin-left: -10px; /* ปรับขอบซ้ายของส่วนหัวให้เท่ากับขอบเส้นขอบของคลิปบอร์ด */
-    margin-right: -10px; /* ปรับขอบขวาของส่วนหัวให้เท่ากับขอบเส้นขอบของคลิปบอร์ด */    
-  }
+    z-index: 1;
+    height: 20px; /* ปรับความสูงของส่วนหัว */
+}
+    .action-btn {
+    top: 64px; /* ปรับค่าตามความสูงของส่วนหัว */
+    z-index: 1;
+    background-color: #2298e2; /* สีพื้นหลัง */
+    color: white; /* สีข้อความ */
+    padding: 5px 10px; /* ขนาดของปุ่ม */
+    border: none; /* ไม่มีเส้นขอบ */
+    border-radius: 6px; /* มุมของปุ่ม */
+    cursor: pointer; /* เมาส์เป็นลูกศร */
+    font-size: 0.7em;
+    margin-left: 6px;
+    background-color: #2298e2; /* สีพื้นหลังของปุ่ม */
+    z-index: 2; /* ให้ปุ่มอยู่ด้านหน้าของข้อความที่เลื่อนมา */
+}
 
+.action-btn:hover {
+    background-color: #148dd8; /* สีพื้นหลังเมื่อโฮเวอร์ */
+}
+
+.action-btn:active {
+    background-color: #1d638e; /* สีพื้นหลังเมื่อคลิก */
+}
 
 
     @media only screen and (max-width: 600px) {
@@ -231,30 +247,6 @@
         font-size: 1em;
     }
 
-    .action-btn {
-    position: sticky;
-    top: 0;
-    z-index: 1;
-    background-color: #2298e2; /* สีพื้นหลัง */
-    color: white; /* สีข้อความ */
-    padding: 5px 10px; /* ขนาดของปุ่ม */
-    border: none; /* ไม่มีเส้นขอบ */
-    border-radius: 6px; /* มุมของปุ่ม */
-    cursor: pointer; /* เมาส์เป็นลูกศร */
-    font-size: 0.7em;
-    margin-left: 6px;
-}
-
-
-.action-btn:hover {
-    background-color: #148dd8; /* สีพื้นหลังเมื่อโฮเวอร์ */
-}
-
-.action-btn:active {
-    background-color: #1d638e; /* สีพื้นหลังเมื่อคลิก */
-}
-
-
 
   </style>
   <link rel="icon" href="./icon.png">
@@ -304,76 +296,108 @@ function toggleClipboard() {
 
     // สคริปต์ของ pastboard
     function addItem() {
-    var items = prompt("ใส่ข้อความที่คุณต้องการ");
-    if (items !== null && items.trim() !== "") {
-        var clipList = document.getElementById("clipList");
-        items.split("\n").forEach(function(item) {
-            if (item.trim() !== "") {
-                var li = document.createElement("li");
-                var span = document.createElement("span");
-                span.textContent = item.trim();
-                span.onclick = function() {
-                    copyToEditor(span);
-                };
-                li.appendChild(span);
+  var items = prompt("ใส่ข้อความที่คุณต้องการ");
+  if (items !== null && items.trim() !== "") {
+    var clipList = document.getElementById("clipList");
+    items.split("\n").forEach(function(item) {
+      if (item.trim() !== "") {
+        var li = document.createElement("li");
+        var span = document.createElement("span");
+        span.textContent = item.trim();
 
-                var deleteBtn = document.createElement("button");
-                deleteBtn.innerHTML = '<i class="fas fa-trash-alt"></i>';
-                deleteBtn.className = "delete";
-                deleteBtn.onclick = function() {
-                clipList.removeChild(li);
-                };
+        span.onclick = function() {
+          copyToEditor(span);
+        };
 
-                li.appendChild(deleteBtn);
+        li.appendChild(span);
 
-                clipList.appendChild(li);
+        var deleteBtn = document.createElement("button");
+        deleteBtn.innerHTML = '<i class="fas fa-trash-alt"></i>';
+        deleteBtn.className = "delete";
+        deleteBtn.onclick = function() {
+          clipList.removeChild(li);
+        };
 
-                var editBtn = document.createElement("button");
-                editBtn.innerHTML = '<i class="fas fa-edit"></i>'; // ใช้ไอคอนแก้ไขจาก Font Awesome
-                editBtn.className = "edit";
-                editBtn.onclick = function() {
-                    var textEditor = document.createElement("textarea");
-                    textEditor.value = span.textContent;
-                    textEditor.style.width = "99%"; // กำหนดความกว้างของ textarea ให้เต็มตาม li
-                    textEditor.style.height = "30px"; // กำหนดความสูงของ textarea ให้เป็น 50px (ตั้งค่าตามต้องการ)
-                    li.replaceChild(textEditor, span);
-                    textEditor.focus();
+        li.appendChild(deleteBtn);
 
-                    textEditor.onblur = function() {
-                        span.textContent = textEditor.value;
-                        li.replaceChild(span, textEditor);
-                        editBtn.style.display = 'inline';
-                        deleteBtn.style.display = 'inline';
-                    };
+        var editBtn = document.createElement("button");
+        editBtn.innerHTML = '<i class="fas fa-edit"></i>'; // ใช้ไอคอนแก้ไขจาก Font Awesome
+        editBtn.className = "edit";
+        editBtn.onclick = function() {
+          var currentListItem = li; // เก็บรายการปัจจุบัน
+          var currentListItemText = span.textContent; // เก็บเนื้อหาของรายการปัจจุบัน
 
-                    editBtn.style.display = 'none';
-                    deleteBtn.style.display = 'none';
-                };
-                li.appendChild(editBtn);
-            }
-        });
-    }
+          var textEditor = document.createElement("textarea");
+          textEditor.value = currentListItemText;
+          textEditor.style.width = "99%";
+          textEditor.style.height = "30px";
+
+          li.replaceChild(textEditor, span);
+          textEditor.focus();
+
+          textEditor.onblur = function() {
+            span.textContent = textEditor.value;
+            li.replaceChild(span, textEditor);
+            editBtn.style.display = 'inline';
+            deleteBtn.style.display = 'inline';
+          };
+
+          editBtn.style.display = 'none';
+          deleteBtn.style.display = 'none';
+        };
+
+        li.appendChild(editBtn);
+
+        clipList.appendChild(li);
+      }
+    });
+  }
 }
 
 function copyToEditor(item) {
-    var textEditor = document.getElementById("textInput");
-    var itemText = item.textContent.trim();
-    
-    // ตรวจสอบว่าท้ายข้อความเป็นเครื่องหมาย ":" หรือไม่
-    if (itemText.endsWith(":")) {
-        // เพิ่มการเคาะวรรคหลังเครื่องหมาย ":"
-        itemText += "   ";
-    }
-    
-    textEditor.value += itemText;
-    textEditor.focus();
-}
+  var textEditor = document.getElementById("textInput");
+  var itemText = item.textContent.trim();
 
+  // ตรวจสอบว่าท้ายข้อความเป็นเครื่องหมาย ":" หรือไม่
+  if (itemText.endsWith(":")) {
+    itemText += "   "; // เพิ่มการเคาะวรรคหลังเครื่องหมาย ":"
+  }
+
+  // เพิ่ม itemText ลงใน textarea
+  var selectionStart = textEditor.selectionStart;
+  var selectionEnd = textEditor.selectionEnd;
+  var text = textEditor.value;
+  var newText = text.substring(0, selectionStart) + itemText + text.substring(selectionEnd, text.length);
+  textEditor.value = newText;
+
+  // บันทึกเนื้อหา textarea ไปยัง localStorage ทันที
+  localStorage.setItem('textareaContent', textEditor.value);
+
+  // ตั้งจุดโฟกัสไปที่ textarea
+  textEditor.focus();
+}
 
 function clearAll() {
     var clipList = document.getElementById("clipList");
     clipList.innerHTML = ""; // Clear all items
 }
+
+// โหลดข้อมูล textarea จาก localStorage เมื่อโหลดหน้าเว็บ
+window.onload = function() {
+  var textEditor = document.getElementById("textInput");
+  var storedContent = localStorage.getItem('textareaContent');
+  if (storedContent) {
+    textEditor.value = storedContent;
+  }
+};
+
+// บันทึกข้อมูล textarea ไปยัง localStorage ทันทีเมื่อมีข้อความปรากฏขึ้น
+var textEditor = document.getElementById("textInput");
+var currentTextareaContent = textEditor.value;
+textEditor.addEventListener('keyup', function() {
+  currentTextareaContent = textEditor.value;
+  localStorage.setItem('textareaContent', currentTextareaContent);
+});
 
 
 
@@ -785,8 +809,22 @@ function performAdditionalReplacements(text) {
       }
     }
     function clearText() {
-      document.getElementById("textInput").value = "";
-    }
+  // ล้างเนื้อหาของ textarea
+  var textEditor = document.getElementById("textInput");
+  textEditor.value = "";
+
+  // ลบรายการทั้งหมดจากรายการ clipList
+  var clipList = document.getElementById("clipList");
+  clipList.innerHTML = "";
+
+  // ลบข้อมูล textareaContent จาก localStorage, sessionStorage, หรือ cookies
+  localStorage.removeItem('textareaContent'); // ลบข้อมูลใน localStorage
+  sessionStorage.removeItem('textareaContent'); // ลบข้อมูลใน sessionStorage
+  setCookie('textareaContent', '', 0); // ลบ cookie
+
+  // รีเซ็ตตัวแปร currentTextareaContent
+  currentTextareaContent = "";
+}
 
   function copyText() {
     var textArea = document.getElementById("textInput");
