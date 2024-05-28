@@ -9,7 +9,7 @@
     <title>Conword</title>
     <link rel="icon" href="./icon.png">
     <div class="footer">
-      เวอร์ชัน 02.01.00  21/05/67 
+      เวอร์ชัน 02.01.01  28/05/67 
     </div>
     <style>
 
@@ -251,154 +251,155 @@
   </style>
   <link rel="icon" href="./icon.png">
 </head>
-<body>  
-    
-      <div id="container">
+<body>
+  <div id="container">
       <textarea id="textInput" rows="10" cols="50"></textarea><br>
       <div class="button-container">
-        
-        <button onclick="arabicNumberToThaiNumberAndReplace(); processPlusSigns();">แปลงและลบคำ</button>
-        <button onclick="findAndAlertErrors()">ตรวจคำผิด</button>
-        <button onclick="copyText()">คัดลอก</button>
-        <button onclick="confirmClearText()">ล้างข้อความ</button>
-        <button class="action-btn" id="toggleClipboard" onclick="toggleClipboard()">
-          <i id="clipboardIcon" class="fas fa-chevron-up"></i>
-          <span id="clipboardButtonText">เปิด/ปิด clipboard</span>
-        </button>
+          <button onclick="arabicNumberToThaiNumberAndReplace(); processPlusSigns();">แปลงและลบคำ</button>
+          <button onclick="findAndAlertErrors()">ตรวจคำผิด</button>
+          <button onclick="copyText()">คัดลอก</button>
+          <button onclick="confirmClearText()">ล้างข้อความ</button>
+          <button class="action-btn" id="toggleClipboard" onclick="toggleClipboard()">
+              <i id="clipboardIcon" class="fas fa-chevron-up"></i>
+              <span id="clipboardButtonText">เปิด/ปิด clipboard</span>
+          </button>
       </div>
       <p id="output"></p>
-    </div>
+  </div>
 
-    
-    <!-- ส่วนของ pastboard -->
-
-    <div id="clipboard">
+  <!-- ส่วนของ pastboard -->
+  <div id="clipboard">
       <h3 id="clipboard-heading">Clipboard</h3>
       <button class="action-btn" onclick="addItem()"><i class="fas fa-plus"></i></button>
-      <button class="action-btn" onclick="clearAll()">ล้างรายการ</button> <!-- Clear All button -->
+      <button class="action-btn" onclick="clearAll()">ล้างรายการ</button>
       <ul id="clipList">
           <!-- List items will be added dynamically -->
       </ul>
   </div>
-  
+
   <script>
+      var clipboard = document.getElementById("clipboard");
 
-var clipboard = document.getElementById("clipboard");
-function toggleClipboard() {
-  if (clipboard.style.display === "none" || clipboard.style.display === "") {
-    clipboard.style.display = "block";
-    document.getElementById("clipboardIcon").className = "fas fa-chevron-up";
-  } else {
-    clipboard.style.display = "none";
-    document.getElementById("clipboardIcon").className = "fas fa-chevron-down";
-  }
-}
-
-    // สคริปต์ของ pastboard
-    function addItem() {
-  var items = prompt("ใส่ข้อความที่คุณต้องการ");
-  if (items !== null && items.trim() !== "") {
-    var clipList = document.getElementById("clipList");
-    items.split("\n").forEach(function(item) {
-      if (item.trim() !== "") {
-        var li = document.createElement("li");
-        var span = document.createElement("span");
-        span.textContent = item.trim();
-
-        span.onclick = function() {
-          copyToEditor(span);
-        };
-
-        li.appendChild(span);
-
-        var deleteBtn = document.createElement("button");
-        deleteBtn.innerHTML = '<i class="fas fa-trash-alt"></i>';
-        deleteBtn.className = "delete";
-        deleteBtn.onclick = function() {
-          clipList.removeChild(li);
-        };
-
-        li.appendChild(deleteBtn);
-
-        var editBtn = document.createElement("button");
-        editBtn.innerHTML = '<i class="fas fa-edit"></i>'; // ใช้ไอคอนแก้ไขจาก Font Awesome
-        editBtn.className = "edit";
-        editBtn.onclick = function() {
-          var currentListItem = li; // เก็บรายการปัจจุบัน
-          var currentListItemText = span.textContent; // เก็บเนื้อหาของรายการปัจจุบัน
-
-          var textEditor = document.createElement("textarea");
-          textEditor.value = currentListItemText;
-          textEditor.style.width = "99%";
-          textEditor.style.height = "30px";
-
-          li.replaceChild(textEditor, span);
-          textEditor.focus();
-
-          textEditor.onblur = function() {
-            span.textContent = textEditor.value;
-            li.replaceChild(span, textEditor);
-            editBtn.style.display = 'inline';
-            deleteBtn.style.display = 'inline';
-          };
-
-          editBtn.style.display = 'none';
-          deleteBtn.style.display = 'none';
-        };
-
-        li.appendChild(editBtn);
-
-        clipList.appendChild(li);
+      function toggleClipboard() {
+          if (clipboard.style.display === "none" || clipboard.style.display === "") {
+              clipboard.style.display = "block";
+              document.getElementById("clipboardIcon").className = "fas fa-chevron-up";
+          } else {
+              clipboard.style.display = "none";
+              document.getElementById("clipboardIcon").className = "fas fa-chevron-down";
+          }
       }
-    });
-  }
-}
 
-function copyToEditor(item) {
-  var textEditor = document.getElementById("textInput");
-  var itemText = item.textContent.trim();
+      function addItem() {
+          var items = prompt("ใส่ข้อความที่คุณต้องการ");
+          if (items !== null && items.trim() !== "") {
+              var clipList = document.getElementById("clipList");
+              items.split("\n").forEach(function(item) {
+                  if (item.trim() !== "") {
+                      var li = document.createElement("li");
+                      var span = document.createElement("span");
+                      span.textContent = item.trim();
 
-  // ตรวจสอบว่าท้ายข้อความเป็นเครื่องหมาย ":" หรือไม่
-  if (itemText.endsWith(":")) {
-    itemText += "   "; // เพิ่มการเคาะวรรคหลังเครื่องหมาย ":"
-  }
+                      span.onclick = function() {
+                          copyToEditor(span);
+                      };
 
-  // เพิ่ม itemText ลงใน textarea
-  var selectionStart = textEditor.selectionStart;
-  var selectionEnd = textEditor.selectionEnd;
-  var text = textEditor.value;
-  var newText = text.substring(0, selectionStart) + itemText + text.substring(selectionEnd, text.length);
-  textEditor.value = newText;
+                      li.appendChild(span);
 
-  // บันทึกเนื้อหา textarea ไปยัง localStorage ทันที
-  localStorage.setItem('textareaContent', textEditor.value);
+                      var deleteBtn = document.createElement("button");
+                      deleteBtn.innerHTML = '<i class="fas fa-trash-alt"></i>';
+                      deleteBtn.className = "delete";
+                      deleteBtn.onclick = function() {
+                          clipList.removeChild(li);
+                      };
 
-  // ตั้งจุดโฟกัสไปที่ textarea
-  textEditor.focus();
-}
+                      li.appendChild(deleteBtn);
 
-function clearAll() {
-    var clipList = document.getElementById("clipList");
-    clipList.innerHTML = ""; // Clear all items
-}
+                      var editBtn = document.createElement("button");
+                      editBtn.innerHTML = '<i class="fas fa-edit"></i>';
+                      editBtn.className = "edit";
+                      editBtn.onclick = function() {
+                          var currentListItem = li;
+                          var currentListItemText = span.textContent;
 
-// โหลดข้อมูล textarea จาก localStorage เมื่อโหลดหน้าเว็บ
-window.onload = function() {
-  var textEditor = document.getElementById("textInput");
-  var storedContent = localStorage.getItem('textareaContent');
-  if (storedContent) {
-    textEditor.value = storedContent;
-  }
-};
+                          var textEditor = document.createElement("textarea");
+                          textEditor.value = currentListItemText;
+                          textEditor.style.width = "99%";
+                          textEditor.style.height = "30px";
 
-// บันทึกข้อมูล textarea ไปยัง localStorage ทันทีเมื่อมีข้อความปรากฏขึ้น
-var textEditor = document.getElementById("textInput");
-var currentTextareaContent = textEditor.value;
-textEditor.addEventListener('keyup', function() {
-  currentTextareaContent = textEditor.value;
-  localStorage.setItem('textareaContent', currentTextareaContent);
-});
+                          li.replaceChild(textEditor, span);
+                          textEditor.focus();
 
+                          textEditor.onblur = function() {
+                              span.textContent = textEditor.value;
+                              li.replaceChild(span, textEditor);
+                              editBtn.style.display = 'inline';
+                              deleteBtn.style.display = 'inline';
+                          };
+
+                          editBtn.style.display = 'none';
+                          deleteBtn.style.display = 'none';
+                      };
+
+                      li.appendChild(editBtn);
+
+                      clipList.appendChild(li);
+                  }
+              });
+          }
+      }
+
+      function copyToEditor(item) {
+          var textEditor = document.getElementById("textInput");
+          var itemText = item.textContent.trim();
+
+          if (itemText.endsWith(":")) {
+              itemText += "   ";
+          }
+
+          var selectionStart = textEditor.selectionStart;
+          var selectionEnd = textEditor.selectionEnd;
+          var text = textEditor.value;
+          var newText = text.substring(0, selectionStart) + itemText + text.substring(selectionEnd, text.length);
+          textEditor.value = newText;
+
+          localStorage.setItem('textareaContent', textEditor.value);
+          textEditor.focus();
+      }
+
+      function clearAll() {
+          var clipList = document.getElementById("clipList");
+          clipList.innerHTML = "";
+      }
+
+      window.onload = function() {
+          var textEditor = document.getElementById("textInput");
+          var storedContent = localStorage.getItem('textareaContent');
+          if (storedContent) {
+              textEditor.value = storedContent;
+          }
+          // จัดการการใช้ Tab ใน textarea
+          textEditor.addEventListener('keydown', function(event) {
+                if (event.key === 'Tab') {
+                    event.preventDefault();
+                    var start = this.selectionStart;
+                    var end = this.selectionEnd;
+
+                    // ตั้งค่า textarea ใหม่ด้วยการเพิ่มแท็บ
+                    this.value = this.value.substring(0, start) + "\t" + this.value.substring(end);
+
+                    // เลื่อนตำแหน่งเคอร์เซอร์
+                    this.selectionStart = this.selectionEnd = start + 1;
+                }
+            });
+        };
+
+        var textEditor = document.getElementById("textInput");
+        var currentTextareaContent = textEditor.value;
+        textEditor.addEventListener('keyup', function() {
+            currentTextareaContent = textEditor.value;
+            localStorage.setItem('textareaContent', currentTextareaContent);
+        });
 
 
     function arabicNumberToThaiNumberAndReplace() {
@@ -812,10 +813,6 @@ function performAdditionalReplacements(text) {
   // ล้างเนื้อหาของ textarea
   var textEditor = document.getElementById("textInput");
   textEditor.value = "";
-
-  // ลบรายการทั้งหมดจากรายการ clipList
-  var clipList = document.getElementById("clipList");
-  clipList.innerHTML = "";
 
   // ลบข้อมูล textareaContent จาก localStorage, sessionStorage, หรือ cookies
   localStorage.removeItem('textareaContent'); // ลบข้อมูลใน localStorage
