@@ -9,7 +9,7 @@
     <title>Conword</title>
     <link rel="icon" href="./icon.png">
     <div class="footer">
-      เวอร์ชัน 02.01.03  28/05/67 
+      เวอร์ชัน 02.01.04  28/05/67 
     </div>
     <style>
 
@@ -308,18 +308,6 @@
           }
       }
 
-      function moveItemUp(li) {
-    if (li.previousElementSibling) {
-        li.parentNode.insertBefore(li, li.previousElementSibling);
-    }
-}
-
-function moveItemDown(li) {
-    if (li.nextElementSibling) {
-        li.parentNode.insertBefore(li.nextElementSibling, li);
-    }
-}
-
       function addItem() {
           var items = prompt("ใส่ข้อความที่คุณต้องการ");
           if (items !== null && items.trim() !== "") {
@@ -380,22 +368,25 @@ function moveItemDown(li) {
       }
 
       function copyToEditor(item) {
-          var textEditor = document.getElementById("textInput");
-          var itemText = item.textContent.trim();
+    var textEditor = document.getElementById("textInput");
+    var itemText = item.textContent.trim();
 
-          if (itemText.endsWith(":")) {
-              itemText += "   ";
-          }
+    // เพิ่มการขึ้นบรรทัดใหม่และย่อหน้าก่อนที่จะเพิ่มข้อความ
+    var newItemText = "\n\t\t" + itemText;
 
-          var selectionStart = textEditor.selectionStart;
-          var selectionEnd = textEditor.selectionEnd;
-          var text = textEditor.value;
-          var newText = text.substring(0, selectionStart) + itemText + text.substring(selectionEnd, text.length);
-          textEditor.value = newText;
+    if (itemText.endsWith(":")) {
+        newItemText += "   ";
+    }
 
-          localStorage.setItem('textareaContent', textEditor.value);
-          textEditor.focus();
-      }
+    var selectionStart = textEditor.selectionStart;
+    var selectionEnd = textEditor.selectionEnd;
+    var text = textEditor.value;
+    var newText = text.substring(0, selectionStart) + newItemText + text.substring(selectionEnd, text.length);
+    textEditor.value = newText;
+
+    localStorage.setItem('textareaContent', textEditor.value);
+    textEditor.focus();
+}
 
       function clearAll() {
           var clipList = document.getElementById("clipList");
@@ -444,7 +435,9 @@ document.getElementById("textInput").addEventListener("input", function(e) {
         "จอ..": "เจ้าหน้าที่คณะอนุกรรมาธิการ   :   ",
         "จนอ..": "เจ้าหน้าที่คณะอนุกรรมาธิการ   :   ",
         "ผขร..": "ผู้เข้าร่วมประชุม   :   ",
-        
+        "เลิก..": "เลิกประชุมเวลา    นาฬิกา",
+        "สน..": "สำนักรายงานการประชุมและชวเลข",
+
         
         
         // เพิ่มคำอื่น ๆ ตามต้องการ
