@@ -9,7 +9,7 @@
     <title>Conword</title>
     <link rel="icon" href="./icon.png">
     <div class="footer">
-      เวอร์ชัน 02.01.01  28/05/67 
+      เวอร์ชัน 02.01.03  28/05/67 
     </div>
     <style>
 
@@ -246,6 +246,24 @@
         cursor: pointer;
         font-size: 1em;
     }
+  .move-up,
+  .move-down {
+      border: none;
+      background: none;
+      cursor: pointer;
+      font-size: 1em;
+      margin-right: 5px;
+  }
+
+  .move-up:hover,
+  .move-down:hover {
+      color: #2298e2;
+  }
+
+  .move-up i,
+  .move-down i {
+      font-size: 1.2em;
+}
 
 
   </style>
@@ -289,6 +307,18 @@
               document.getElementById("clipboardIcon").className = "fas fa-chevron-down";
           }
       }
+
+      function moveItemUp(li) {
+    if (li.previousElementSibling) {
+        li.parentNode.insertBefore(li, li.previousElementSibling);
+    }
+}
+
+function moveItemDown(li) {
+    if (li.nextElementSibling) {
+        li.parentNode.insertBefore(li.nextElementSibling, li);
+    }
+}
 
       function addItem() {
           var items = prompt("ใส่ข้อความที่คุณต้องการ");
@@ -400,6 +430,40 @@
             currentTextareaContent = textEditor.value;
             localStorage.setItem('textareaContent', currentTextareaContent);
         });
+
+// เพิ่มฟังก์ชัน Auto Complete
+document.getElementById("textInput").addEventListener("input", function(e) {
+    var value = this.value;
+    var cursorPos = this.selectionStart;
+    var lastWords = value.substring(0, cursorPos).split(/\s+/).pop(); // เปลี่ยน lastWord เป็น lastWords เพื่อให้รองรับการเก็บคำหลายๆ คำ
+    var replacementWords = {
+        "ป..": "ประธาน   :   ",
+        "เล..": "เลขานุการ   :   ",
+        "จท..": "เจ้าหน้าที่คณะกรรมาธิการ   :   ",
+        "จนท..": "เจ้าหน้าที่คณะกรรมาธิการ   :   ",
+        "จอ..": "เจ้าหน้าที่คณะอนุกรรมาธิการ   :   ",
+        "จนอ..": "เจ้าหน้าที่คณะอนุกรรมาธิการ   :   ",
+        "ผขร..": "ผู้เข้าร่วมประชุม   :   ",
+        
+        
+        
+        // เพิ่มคำอื่น ๆ ตามต้องการ
+    };
+
+    // ตรวจสอบว่า lastWords อยู่ในรายการของคำที่ต้องการ Auto Complete หรือไม่
+    if (lastWords in replacementWords) {
+        var newText = value.substring(0, cursorPos - lastWords.length) + replacementWords[lastWords] + value.substring(cursorPos);
+        this.value = newText;
+        this.selectionStart = this.selectionEnd = cursorPos - lastWords.length + replacementWords[lastWords].length;
+        saveToLocalStorage(this.value); // Save the updated text to localStorage
+    }
+});
+
+
+// เพิ่มฟังก์ชันเพื่อบันทึกข้อความลงใน localStorage
+function saveToLocalStorage(text) {
+    localStorage.setItem("savedText", text);
+}
 
 
     function arabicNumberToThaiNumberAndReplace() {
