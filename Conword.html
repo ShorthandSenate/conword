@@ -9,7 +9,7 @@
     <title>Conword</title>
     <link rel="icon" href="./icon.png">
     <div class="footer">
-      เวอร์ชัน 02.01.05  30/05/67 
+      เวอร์ชัน 02.01.06  31/05/67 
     </div>
     <style>
       body {
@@ -28,9 +28,11 @@
           flex-direction: column;
           justify-content: center;
           align-items: center;
-          height: 90vh;
+          height: 95vh;
           margin: 0;
-          padding-top: 5px;
+          padding-top: 100px;
+    
+    
       }
 
       #textInput {
@@ -39,7 +41,7 @@
           width: 95%;
           max-width: 50em;
           height: 95vh;
-          max-height: 600em;
+          max-height: 60em;
           padding: 35px;
           font-size: 16px;
           border-radius: 30px;
@@ -148,19 +150,17 @@
           max-width: 100%;
           width: 600px;
           height: 95vh;
-          max-height:44em;
+          max-height:60em;
           border: 1px solid #ccc;
           padding: 10px;
           padding-left: 15px;
-          margin-bottom: 100px;
           border-radius: 20px;
           box-sizing: border-box;
           background-color: #f8f8f8;
           outline: none;
           border: none;
           box-shadow: 0 0 50px rgba(0, 0, 0, 0.1);
-          margin: auto;
-          margin-right: 5%;
+          margin-right: 1%;
           overflow-y: auto;
           /*display: none;*/
       }
@@ -201,8 +201,8 @@
 
       @media only screen and (max-width: 600px) {
           #clipboard {
-              width: 90%;
-              height: 90%;
+              width: 100%;
+              height: 100%;
           }
       }
 
@@ -267,11 +267,62 @@
           font-size: 1em;
       }
 
+#clock {
+    position: fixed;
+    top: 10px; /* ปรับให้ห่างจากด้านบน */
+    right: 10px; /* ปรับให้ห่างจากด้านขวา */
+    background-color: rgba(0, 0, 0, 0.6); /* พื้นหลังสีดำโปร่งแสง */
+    color: #ffffff; /* สีตัวอักษร */
+    padding: 10px 15px; /* การจัดระยะห่างด้านใน */
+    border-radius: 5px; /* มุมมน */
+    font-family: 'Tahoma', sans-serif; /* แบบอักษร */
+    font-size: 16px; /* ขนาดอักษร */
+    z-index: 1000; /* อยู่ด้านบนสุด */
+    transition: all 0.3s ease; /* เพิ่มการเปลี่ยนแปลงนุ่มนวล */
+}
+
+@media (max-width: 900px) {
+    #clock {
+        font-size: 14px; /* ลดขนาดอักษร */
+        padding: 8px 12px; /* ลดการจัดระยะห่างด้านใน */
+    }
+}
+
+@media (max-width: 600px) {
+    #clock {
+        font-size: 12px; /* ลดขนาดอักษร */
+        padding: 5px 10px; /* ลดการจัดระยะห่างด้านใน */
+    }
+}
+
+@media (max-width: 400px) {
+    #clock {
+        font-size: 10px; /* ลดขนาดอักษร */
+        padding: 3px 8px; /* ลดการจัดระยะห่างด้านใน */
+    }
+}
+
+@media (max-height: 600px) {
+    #clock {
+        font-size: 12px; /* ลดขนาดอักษร */
+        padding: 5px 10px; /* ลดการจัดระยะห่างด้านใน */
+    }
+}
+
+@media (max-height: 400px) {
+    #clock {
+        font-size: 10px; /* ลดขนาดอักษร */
+        padding: 3px 8px; /* ลดการจัดระยะห่างด้านใน */
+    }
+}
+
+
   </style>
   
 <link rel="icon" href="./icon.png">
 </head>
 <body>
+  <div id="clock"></div>
   <div id="container">
       <textarea id="textInput" rows="10" cols="50"></textarea><br>
       <div class="button-container">
@@ -891,10 +942,36 @@ function performAdditionalReplacements(text) {
   currentTextareaContent = "";
 }
 
+function updateClock() {
+    var now = new Date();
+    var hours = now.getHours();
+    var minutes = now.getMinutes();
+    var seconds = now.getSeconds();
+    var timeString = 
+        ('0' + hours).slice(-2) + ':' + 
+        ('0' + minutes).slice(-2) + ':' + 
+        ('0' + seconds).slice(-2);
+
+    document.getElementById('clock').textContent = timeString;
+}
+
+setInterval(updateClock, 1000);
+updateClock(); // เรียกทันทีเพื่อไม่ให้มีการหน่วงเวลา
+
+function adjustClipboardHeight() {
+    var textInput = document.getElementById('textInput');
+    var clipboard = document.getElementById('clipboard');
+    clipboard.style.height = textInput.offsetHeight + 'px';
+}
+
+window.onload = adjustClipboardHeight;
+window.onresize = adjustClipboardHeight;
+
   function copyText() {
     var textArea = document.getElementById("textInput");
     textArea.select();
     document.execCommand("copy");
+
         // สร้างแถบสถานะ
         var statusElement = document.createElement("div");
     statusElement.textContent = "คัดลอกข้อความทั้งหมดแล้ว!";
