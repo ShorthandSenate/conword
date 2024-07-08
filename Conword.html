@@ -9,7 +9,7 @@
     <title>Conword</title>
     <link rel="icon" href="./icon.png">
     <div class="footer">
-      เวอร์ชัน 02.01.06  31/05/67 
+      เวอร์ชัน 02.01.07  08/07/67 
     </div>
     <style>
       body {
@@ -481,13 +481,33 @@
             currentTextareaContent = textEditor.value;
             localStorage.setItem('textareaContent', currentTextareaContent);
         });
+        
+        //เพิ่มฟังชั่นเพื่อ tab
+        var textEditor = document.getElementById("textInput");
+        textEditor.addEventListener('keydown', function(event) {
+        if (event.key === 'Tab') {
+        event.preventDefault(); // ป้องกัน Tab ใช้งานโดยปกติ
+        
+        var start = this.selectionStart;
+        var end = this.selectionEnd;
 
-// เพิ่มฟังก์ชัน Auto Complete
-document.getElementById("textInput").addEventListener("input", function(e) {
-    var value = this.value;
-    var cursorPos = this.selectionStart;
-    var lastWords = value.substring(0, cursorPos).split(/\s+/).pop(); // เปลี่ยน lastWord เป็น lastWords เพื่อให้รองรับการเก็บคำหลายๆ คำ
-    var replacementWords = {
+        // เพิ่มการเยื้องด้วย Tab
+        var text = this.value;
+        var newText = text.substring(0, start) + '\t' + text.substring(end);
+        this.value = newText;
+
+        // ตั้งค่าตำแหน่ง cursor ให้เลื่อนไปหลังจุดที่เพิ่งเพิ่ม Tab เข้าไป
+        this.selectionStart = this.selectionEnd = start + 1;
+    }
+});
+
+        
+    // เพิ่มฟังก์ชัน Auto Complete
+    document.getElementById("textInput").addEventListener("input", function(e) {
+        var value = this.value;
+        var cursorPos = this.selectionStart;
+        var lastWords = value.substring(0, cursorPos).split(/\s+/).pop(); // เปลี่ยน lastWord เป็น lastWords เพื่อให้รองรับการเก็บคำหลายๆ คำ
+        var replacementWords = {
         "ป..": "ประธาน   :   ",
         "เล..": "เลขานุการ   :   ",
         "จท..": "เจ้าหน้าที่คณะกรรมาธิการ   :   ",
