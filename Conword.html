@@ -9,7 +9,7 @@
     <title>Conword</title>
     <link rel="icon" href="./icon.png">
     <div class="footer">
-      เวอร์ชัน 02.01.07  08/07/67 
+      เวอร์ชัน 02.01.07  08/07/67 DEMO
     </div>
     <style>
       body {
@@ -372,7 +372,7 @@
           var items = prompt("ใส่ข้อความที่คุณต้องการ");
           if (items !== null && items.trim() !== "") {
               var clipList = document.getElementById("clipList");
-              items.split("\n").forEach(function(item) {
+              items.split(/[\n:]/).forEach(function(item) {
                   if (item.trim() !== "") {
                       var li = document.createElement("li");
                       var span = document.createElement("span");
