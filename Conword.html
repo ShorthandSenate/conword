@@ -9,7 +9,7 @@
     <title>Conword</title>
     <link rel="icon" href="./icon.png">
     <div class="footer">
-      เวอร์ชัน 02.01.07  08/07/67 DEMO
+      เวอร์ชัน 02.02.02  07/08/67 
     </div>
     <style>
       body {
@@ -368,65 +368,148 @@
           icon.className = "fas fa-chevron-up";
       }
   }
-      function addItem() {
-          var items = prompt("ใส่ข้อความที่คุณต้องการ");
-          if (items !== null && items.trim() !== "") {
-              var clipList = document.getElementById("clipList");
-              items.split(/[\n:]/).forEach(function(item) {
-                  if (item.trim() !== "") {
-                      var li = document.createElement("li");
-                      var span = document.createElement("span");
-                      span.textContent = item.trim();
+// ฟังก์ชันเพื่อบันทึกรายการ clipList ลงใน localStorage
+function saveClipListToLocalStorage() {
+    var clipList = document.getElementById('clipList');
+    var items = [];
+    for (var i = 0; i < clipList.children.length; i++) {
+        items.push(clipList.children[i].querySelector('span').textContent);
+    }
+    localStorage.setItem('clipList', JSON.stringify(items));
+}
 
-                      span.onclick = function() {
-                          copyToEditor(span);
-                      };
+// ฟังก์ชันเพื่อโหลดรายการ clipList จาก localStorage
+function loadClipListFromLocalStorage() {
+    var items = JSON.parse(localStorage.getItem('clipList'));
+    if (items) {
+        var clipList = document.getElementById('clipList');
+        clipList.innerHTML = ''; // ล้างรายการเก่าก่อน
+        items.forEach(function(item) {
+            var li = document.createElement('li');
+            var span = document.createElement('span');
+            span.textContent = item;
 
-                      li.appendChild(span);
+            span.onclick = function() {
+                copyToEditor(span);
+            };
 
-                      var deleteBtn = document.createElement("button");
-                      deleteBtn.innerHTML = '<i class="fas fa-trash-alt"></i>';
-                      deleteBtn.className = "delete";
-                      deleteBtn.onclick = function() {
-                          clipList.removeChild(li);
-                      };
+            li.appendChild(span);
 
-                      li.appendChild(deleteBtn);
+            var deleteBtn = document.createElement('button');
+            deleteBtn.innerHTML = '<i class="fas fa-trash-alt"></i>';
+            deleteBtn.className = 'delete';
+            deleteBtn.onclick = function() {
+                clipList.removeChild(li);
+                saveClipListToLocalStorage(); // บันทึกเมื่อมีการลบ
+            };
 
-                      var editBtn = document.createElement("button");
-                      editBtn.innerHTML = '<i class="fas fa-edit"></i>';
-                      editBtn.className = "edit";
-                      editBtn.onclick = function() {
-                          var currentListItem = li;
-                          var currentListItemText = span.textContent;
+            li.appendChild(deleteBtn);
 
-                          var textEditor = document.createElement("textarea");
-                          textEditor.value = currentListItemText;
-                          textEditor.style.width = "99%";
-                          textEditor.style.height = "30px";
+            var editBtn = document.createElement('button');
+            editBtn.innerHTML = '<i class="fas fa-edit"></i>';
+            editBtn.className = 'edit';
+            editBtn.onclick = function() {
+                var currentListItem = li;
+                var currentListItemText = span.textContent;
 
-                          li.replaceChild(textEditor, span);
-                          textEditor.focus();
+                var textEditor = document.createElement('textarea');
+                textEditor.value = currentListItemText;
+                textEditor.style.width = '99%';
+                textEditor.style.height = '30px';
 
-                          textEditor.onblur = function() {
-                              span.textContent = textEditor.value;
-                              li.replaceChild(span, textEditor);
-                              editBtn.style.display = 'inline';
-                              deleteBtn.style.display = 'inline';
-                          };
+                li.replaceChild(textEditor, span);
+                textEditor.focus();
 
-                          editBtn.style.display = 'none';
-                          deleteBtn.style.display = 'none';
-                      };
+                textEditor.onblur = function() {
+                    span.textContent = textEditor.value;
+                    li.replaceChild(span, textEditor);
+                    editBtn.style.display = 'inline';
+                    deleteBtn.style.display = 'inline';
+                    saveClipListToLocalStorage(); // บันทึกเมื่อมีการแก้ไข
+                };
 
-                      li.appendChild(editBtn);
+                editBtn.style.display = 'none';
+                deleteBtn.style.display = 'none';
+            };
 
-                      clipList.appendChild(li);
-                  }
-              });
-          }
-      }
+            li.appendChild(editBtn);
 
+            clipList.appendChild(li);
+        });
+    }
+}
+
+// ฟังก์ชัน addItem ที่อัพเดท
+function addItem() {
+    var items = prompt('ใส่ข้อความที่คุณต้องการ');
+    if (items !== null && items.trim() !== '') {
+        var clipList = document.getElementById('clipList');
+        items.split(/\r?\n|\r/).forEach(function(item) {
+            if (item.trim() !== '') {
+                var li = document.createElement('li');
+                var span = document.createElement('span');
+                span.textContent = item.trim();
+
+                span.onclick = function() {
+                    copyToEditor(span);
+                };
+
+                li.appendChild(span);
+
+                var deleteBtn = document.createElement('button');
+                deleteBtn.innerHTML = '<i class="fas fa-trash-alt"></i>';
+                deleteBtn.className = 'delete';
+                deleteBtn.onclick = function() {
+                    clipList.removeChild(li);
+                    saveClipListToLocalStorage(); // บันทึกเมื่อมีการลบ
+                };
+
+                li.appendChild(deleteBtn);
+
+                var editBtn = document.createElement('button');
+                editBtn.innerHTML = '<i class="fas fa-edit"></i>';
+                editBtn.className = 'edit';
+                editBtn.onclick = function() {
+                    var currentListItem = li;
+                    var currentListItemText = span.textContent;
+
+                    var textEditor = document.createElement('textarea');
+                    textEditor.value = currentListItemText;
+                    textEditor.style.width = '99%';
+                    textEditor.style.height = '30px';
+
+                    li.replaceChild(textEditor, span);
+                    textEditor.focus();
+
+                    textEditor.onblur = function() {
+                        span.textContent = textEditor.value;
+                        li.replaceChild(span, textEditor);
+                        editBtn.style.display = 'inline';
+                        deleteBtn.style.display = 'inline';
+                        saveClipListToLocalStorage(); // บันทึกเมื่อมีการแก้ไข
+                    };
+
+                    editBtn.style.display = 'none';
+                    deleteBtn.style.display = 'none';
+                };
+
+                li.appendChild(editBtn);
+
+                clipList.appendChild(li);
+            }
+        });
+        saveClipListToLocalStorage(); // บันทึกเมื่อมีการเพิ่ม
+    }
+}
+
+// โหลดรายการ clipList เมื่อโหลดหน้า
+window.onload = function() {
+    var savedText = localStorage.getItem('savedText');
+    if (savedText !== null) {
+        document.getElementById('textInput').value = savedText;
+    }
+    loadClipListFromLocalStorage(); // โหลดรายการ clipList
+};
       function copyToEditor(item) {
     var textEditor = document.getElementById("textInput");
     var itemText = item.textContent.trim();
@@ -444,36 +527,16 @@
     var newText = text.substring(0, selectionStart) + newItemText + text.substring(selectionEnd, text.length);
     textEditor.value = newText;
 
-    localStorage.setItem('textareaContent', textEditor.value);
+    // บันทึกข้อความที่ถูกเพิ่มใหม่ลงใน localStorage 
+    saveToLocalStorage(textEditor.value);
     textEditor.focus();
-}
+    }
 
       function clearAll() {
           var clipList = document.getElementById("clipList");
           clipList.innerHTML = "";
       }
 
-      window.onload = function() {
-          var textEditor = document.getElementById("textInput");
-          var storedContent = localStorage.getItem('textareaContent');
-          if (storedContent) {
-              textEditor.value = storedContent;
-          }
-          // จัดการการใช้ Tab ใน textarea
-          textEditor.addEventListener('keydown', function(event) {
-                if (event.key === 'Tab') {
-                    event.preventDefault();
-                    var start = this.selectionStart;
-                    var end = this.selectionEnd;
-
-                    // ตั้งค่า textarea ใหม่ด้วยการเพิ่มแท็บ
-                    this.value = this.value.substring(0, start) + "\t" + this.value.substring(end);
-
-                    // เลื่อนตำแหน่งเคอร์เซอร์
-                    this.selectionStart = this.selectionEnd = start + 1;
-                }
-            });
-        };
 
         var textEditor = document.getElementById("textInput");
         var currentTextareaContent = textEditor.value;
@@ -501,42 +564,7 @@
     }
 });
 
-        
-    // เพิ่มฟังก์ชัน Auto Complete
-    document.getElementById("textInput").addEventListener("input", function(e) {
-        var value = this.value;
-        var cursorPos = this.selectionStart;
-        var lastWords = value.substring(0, cursorPos).split(/\s+/).pop(); // เปลี่ยน lastWord เป็น lastWords เพื่อให้รองรับการเก็บคำหลายๆ คำ
-        var replacementWords = {
-        "ป..": "ประธาน   :   ",
-        "เล..": "เลขานุการ   :   ",
-        "จท..": "เจ้าหน้าที่คณะกรรมาธิการ   :   ",
-        "จนท..": "เจ้าหน้าที่คณะกรรมาธิการ   :   ",
-        "จอ..": "เจ้าหน้าที่คณะอนุกรรมาธิการ   :   ",
-        "จนอ..": "เจ้าหน้าที่คณะอนุกรรมาธิการ   :   ",
-        "ผขร..": "ผู้เข้าร่วมประชุม   :   ",
-        "เลิก..": "เลิกประชุมเวลา    นาฬิกา",
-        "สน..": "สำนักรายงานการประชุมและชวเลข",
 
-        
-        
-        // เพิ่มคำอื่น ๆ ตามต้องการ
-    };
-
-    // ตรวจสอบว่า lastWords อยู่ในรายการของคำที่ต้องการ Auto Complete หรือไม่
-    if (lastWords in replacementWords) {
-        var newText = value.substring(0, cursorPos - lastWords.length) + replacementWords[lastWords] + value.substring(cursorPos);
-        this.value = newText;
-        this.selectionStart = this.selectionEnd = cursorPos - lastWords.length + replacementWords[lastWords].length;
-        saveToLocalStorage(this.value); // Save the updated text to localStorage
-    }
-});
-
-
-// เพิ่มฟังก์ชันเพื่อบันทึกข้อความลงใน localStorage
-function saveToLocalStorage(text) {
-    localStorage.setItem("savedText", text);
-}
 
 
     function arabicNumberToThaiNumberAndReplace() {
@@ -943,26 +971,48 @@ function performAdditionalReplacements(text) {
       alert(message);
     }
 
-    function confirmClearText() {
+
+  function copyText() {
+    var textArea = document.getElementById("textInput");
+    textArea.select();
+    document.execCommand("copy");
+
+        // สร้างแถบสถานะ
+        var statusElement = document.createElement("div");
+    statusElement.textContent = "คัดลอกข้อความทั้งหมดแล้ว!";
+    statusElement.classList.add("status-bar"); // เพิ่มคลาสสำหรับใส่ CSS
+    document.body.appendChild(statusElement);
+
+    // หายไปใน 7 วินาที
+      setTimeout(function() {
+      statusElement.style.display = "none";
+    }, 7000);
+
+    }
+            // เพิ่มฟังก์ชันเพื่อบันทึกข้อความลงใน localStorage
+            function saveToLocalStorage(text) {
+            localStorage.setItem("savedText", text);
+        }
+
+        var textEditor = document.getElementById("textInput");
+        textEditor.addEventListener('keyup', function() {
+            saveToLocalStorage(textEditor.value);
+        });
+
+        window.onload = function() {
+            var savedText = localStorage.getItem('savedText');
+            if (savedText !== null) {
+                document.getElementById('textInput').value = savedText;
+            }
+        };
+        function confirmClearText() {
       if (confirm("ต้องการล้างข้อความหรือไม่?")) {
         clearText();
       }
     }
-    function clearText() {
-  // ล้างเนื้อหาของ textarea
-  var textEditor = document.getElementById("textInput");
-  textEditor.value = "";
 
-  // ลบข้อมูล textareaContent จาก localStorage, sessionStorage, หรือ cookies
-  localStorage.removeItem('textareaContent'); // ลบข้อมูลใน localStorage
-  sessionStorage.removeItem('textareaContent'); // ลบข้อมูลใน sessionStorage
-  setCookie('textareaContent', '', 0); // ลบ cookie
-
-  // รีเซ็ตตัวแปร currentTextareaContent
-  currentTextareaContent = "";
-}
-
-function updateClock() {
+    //นาฬิกา
+    function updateClock() {
     var now = new Date();
     var hours = now.getHours();
     var minutes = now.getMinutes();
@@ -987,23 +1037,20 @@ function adjustClipboardHeight() {
 window.onload = adjustClipboardHeight;
 window.onresize = adjustClipboardHeight;
 
-  function copyText() {
-    var textArea = document.getElementById("textInput");
-    textArea.select();
-    document.execCommand("copy");
+    function clearText() {
+  // ล้างเนื้อหาของ textarea
+  var textEditor = document.getElementById("textInput");
+  textEditor.value = "";
 
-        // สร้างแถบสถานะ
-        var statusElement = document.createElement("div");
-    statusElement.textContent = "คัดลอกข้อความทั้งหมดแล้ว!";
-    statusElement.classList.add("status-bar"); // เพิ่มคลาสสำหรับใส่ CSS
-    document.body.appendChild(statusElement);
+  // ลบข้อมูล textareaContent จาก localStorage, sessionStorage, หรือ cookies
+  localStorage.removeItem('savedText'); // ลบข้อมูลใน localStorage
+  sessionStorage.removeItem('savedText'); // ลบข้อมูลใน sessionStorage
 
-    // หายไปใน 7 วินาที
-      setTimeout(function() {
-      statusElement.style.display = "none";
-    }, 7000);
 
-    }
+  // รีเซ็ตตัวแปร currentTextareaContent
+  currentTextareaContent = "";
+}
+
   </script>
 </body>
 
