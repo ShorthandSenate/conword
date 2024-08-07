@@ -9,7 +9,7 @@
     <title>Conword</title>
     <link rel="icon" href="./icon.png">
     <div class="footer">
-      เวอร์ชัน 02.02.07  07/08/67
+      เวอร์ชัน 02.02.08  07/08/67
     </div>
     <style>
       body {
@@ -444,59 +444,66 @@ function addItem() {
     var items = prompt('ใส่ข้อความที่คุณต้องการ');
     if (items !== null && items.trim() !== '') {
         var clipList = document.getElementById('clipList');
+        
+        // แยกข้อความด้วยเครื่องหมายขึ้นบรรทัดใหม่
         items.split(/\r?\n|\r/).forEach(function(item) {
-            if (item.trim() !== '') {
-                var li = document.createElement('li');
-                var span = document.createElement('span');
-                span.textContent = item.trim();
+            // ตรวจสอบและแยกด้วยเครื่องหมาย :
+            var subItems = item.split(/(?<=:)/); // แยกข้อความด้วยเครื่องหมาย : โดยไม่ลบเครื่องหมาย : ออก
+            subItems.forEach(function(subItem) {
+                if (subItem.trim() !== '') {
+                    var li = document.createElement('li');
+                    var span = document.createElement('span');
+                    
+                    // กำหนดข้อความใน span โดยไม่ลบช่องว่าง
+                    span.textContent = subItem;
 
-                span.onclick = function() {
-                    copyToEditor(span);
-                };
-
-                li.appendChild(span);
-
-                var deleteBtn = document.createElement('button');
-                deleteBtn.innerHTML = '<i class="fas fa-trash-alt"></i>';
-                deleteBtn.className = 'delete';
-                deleteBtn.onclick = function() {
-                    clipList.removeChild(li);
-                    saveClipListToLocalStorage(); // บันทึกเมื่อมีการลบ
-                };
-
-                li.appendChild(deleteBtn);
-
-                var editBtn = document.createElement('button');
-                editBtn.innerHTML = '<i class="fas fa-edit"></i>';
-                editBtn.className = 'edit';
-                editBtn.onclick = function() {
-                    var currentListItem = li;
-                    var currentListItemText = span.textContent;
-
-                    var textEditor = document.createElement('textarea');
-                    textEditor.value = currentListItemText;
-                    textEditor.style.width = '99%';
-                    textEditor.style.height = '30px';
-
-                    li.replaceChild(textEditor, span);
-                    textEditor.focus();
-
-                    textEditor.onblur = function() {
-                        span.textContent = textEditor.value;
-                        li.replaceChild(span, textEditor);
-                        editBtn.style.display = 'inline';
-                        deleteBtn.style.display = 'inline';
-                        saveClipListToLocalStorage(); // บันทึกเมื่อมีการแก้ไข
+                    span.onclick = function() {
+                        copyToEditor(span);
                     };
 
-                    editBtn.style.display = 'none';
-                    deleteBtn.style.display = 'none';
-                };
+                    var deleteBtn = document.createElement('button');
+                    deleteBtn.innerHTML = '<i class="fas fa-trash-alt"></i>';
+                    deleteBtn.className = 'delete';
+                    deleteBtn.onclick = function() {
+                        clipList.removeChild(li);
+                        saveClipListToLocalStorage(); // บันทึกเมื่อมีการลบ
+                    };
 
-                li.appendChild(editBtn);
+                    li.appendChild(deleteBtn);
 
-                clipList.appendChild(li);
-            }
+                    var editBtn = document.createElement('button');
+                    editBtn.innerHTML = '<i class="fas fa-edit"></i>';
+                    editBtn.className = 'edit';
+                    editBtn.onclick = function() {
+                        var currentListItem = li;
+                        var currentListItemText = span.textContent;
+
+                        var textEditor = document.createElement('textarea');
+                        textEditor.value = currentListItemText;
+                        textEditor.style.width = '99%';
+                        textEditor.style.height = '30px';
+
+                        li.replaceChild(textEditor, span);
+                        textEditor.focus();
+
+                        textEditor.onblur = function() {
+                            span.textContent = textEditor.value;
+                            li.replaceChild(span, textEditor);
+                            editBtn.style.display = 'inline';
+                            deleteBtn.style.display = 'inline';
+                            saveClipListToLocalStorage(); // บันทึกเมื่อมีการแก้ไข
+                        };
+
+                        editBtn.style.display = 'none';
+                        deleteBtn.style.display = 'none';
+                    };
+
+                    li.appendChild(editBtn);
+
+                    li.appendChild(span);
+                    clipList.appendChild(li);
+                }
+            });
         });
         saveClipListToLocalStorage(); // บันทึกเมื่อมีการเพิ่ม
     }
