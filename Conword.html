@@ -9,7 +9,7 @@
     <title>Conword</title>
     <link rel="icon" href="./icon.png">
     <div class="footer">
-      เวอร์ชัน 02.02.02  07/08/67 demo
+      เวอร์ชัน 02.02.07  07/08/67
     </div>
     <style>
       body {
@@ -527,7 +527,7 @@ window.onload = function() {
     var newText = text.substring(0, selectionStart) + newItemText + text.substring(selectionEnd, text.length);
     textEditor.value = newText;
 
-    // บันทึกข้อความที่ถูกเพิ่มใหม่ลงใน localStorage 
+    // บันทึกข้อความที่ถูกเพิ่มใหม่ลงใน localStorage
     saveToLocalStorage(textEditor.value);
     textEditor.focus();
     }
@@ -989,30 +989,24 @@ function performAdditionalReplacements(text) {
     }, 7000);
 
     }
-            // เพิ่มฟังก์ชันเพื่อบันทึกข้อความลงใน localStorage
-            function saveToLocalStorage(text) {
-            localStorage.setItem("savedText", text);
-        }
+// เพิ่มฟังก์ชันเพื่อบันทึกข้อความลงใน localStorage
+function saveToLocalStorage(text) {
+    localStorage.setItem("savedText", text);
+}
 
-        var textEditor = document.getElementById("textInput");
-        textEditor.addEventListener('keyup', function() {
-            saveToLocalStorage(textEditor.value);
-        });
+var textEditor = document.getElementById("textInput");
+textEditor.addEventListener('keyup', function() {
+    saveToLocalStorage(textEditor.value);
+});
 
-        window.onload = function() {
-            var savedText = localStorage.getItem('savedText');
-            if (savedText !== null) {
-                document.getElementById('textInput').value = savedText;
-            }
-        };
-        function confirmClearText() {
-      if (confirm("ต้องการล้างข้อความหรือไม่?")) {
+function confirmClearText() {
+    if (confirm("ต้องการล้างข้อความหรือไม่?")) {
         clearText();
-      }
     }
+}
 
-    //นาฬิกา
-    function updateClock() {
+//นาฬิกา
+function updateClock() {
     var now = new Date();
     var hours = now.getHours();
     var minutes = now.getMinutes();
@@ -1025,31 +1019,38 @@ function performAdditionalReplacements(text) {
     document.getElementById('clock').textContent = timeString;
 }
 
-setInterval(updateClock, 1000);
-updateClock(); // เรียกทันทีเพื่อไม่ให้มีการหน่วงเวลา
+    function adjustClipboardHeight() {
+        var textInput = document.getElementById('textInput');
+        var clipboard = document.getElementById('clipboard');
+        clipboard.style.height = textInput.offsetHeight + 'px';
+    }
 
-function adjustClipboardHeight() {
-    var textInput = document.getElementById('textInput');
-    var clipboard = document.getElementById('clipboard');
-    clipboard.style.height = textInput.offsetHeight + 'px';
-}
+    window.onload = function() {
+        var savedText = localStorage.getItem('savedText');
+        if (savedText !== null) {
+            document.getElementById('textInput').value = savedText;
+        }
 
-window.onload = adjustClipboardHeight;
-window.onresize = adjustClipboardHeight;
+        adjustClipboardHeight();
+        setInterval(updateClock, 1000);
+        updateClock(); // เรียกทันทีเพื่อไม่ให้มีการหน่วงเวลา
+    };
 
-    function clearText() {
-  // ล้างเนื้อหาของ textarea
-  var textEditor = document.getElementById("textInput");
-  textEditor.value = "";
+    window.onresize = adjustClipboardHeight;
 
-  // ลบข้อมูล textareaContent จาก localStorage, sessionStorage, หรือ cookies
-  localStorage.removeItem('savedText'); // ลบข้อมูลใน localStorage
-  sessionStorage.removeItem('savedText'); // ลบข้อมูลใน sessionStorage
+        function clearText() {
+    // ล้างเนื้อหาของ textarea
+    var textEditor = document.getElementById("textInput");
+    textEditor.value = "";
+
+    // ลบข้อมูล textareaContent จาก localStorage, sessionStorage, หรือ cookies
+    localStorage.removeItem('savedText'); // ลบข้อมูลใน localStorage
+    sessionStorage.removeItem('savedText'); // ลบข้อมูลใน sessionStorage
 
 
-  // รีเซ็ตตัวแปร currentTextareaContent
-  currentTextareaContent = "";
-}
+    // รีเซ็ตตัวแปร currentTextareaContent
+    currentTextareaContent = "";
+    }
 
   </script>
 </body>
