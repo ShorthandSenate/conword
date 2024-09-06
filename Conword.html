@@ -9,7 +9,7 @@
     <title>Conword</title>
     <link rel="icon" href="./icon.png">
     <div class="footer">
-      เวอร์ชัน 02.02.08  07/08/67
+      เวอร์ชัน 02.02.09  06/09/67
     </div>
     <style>
       body {
@@ -571,9 +571,39 @@ window.onload = function() {
     }
 });
 
+    // เพิ่มฟังก์ชัน Auto Complete
+    document.getElementById("textInput").addEventListener("input", function(e) {
+        var value = this.value;
+        var cursorPos = this.selectionStart;
+        var lastWords = value.substring(0, cursorPos).split(/\s+/).pop(); // เปลี่ยน lastWord เป็น lastWords เพื่อให้รองรับการเก็บคำหลายๆ คำ
+        var replacementWords = {
+        "ป..": "ประธาน   :   ",
+        "เล..": "เลขานุการ   :   ",
+        "จท..": "เจ้าหน้าที่คณะกรรมาธิการ   :   ",
+        "จนท..": "เจ้าหน้าที่คณะกรรมาธิการ   :   ",
+        "จอ..": "เจ้าหน้าที่คณะอนุกรรมาธิการ   :   ",
+        "จนอ..": "เจ้าหน้าที่คณะอนุกรรมาธิการ   :   ",
+        "ผขร..": "ผู้เข้าร่วมประชุม   :   ",
+        "เลิก..": "เลิกประชุมเวลา    นาฬิกา",
+        "สน..": "สำนักรายงานการประชุมและชวเลข",
+
+        // เพิ่มคำอื่น ๆ ตามต้องการ
+    };
+
+    // ตรวจสอบว่า lastWords อยู่ในรายการของคำที่ต้องการ Auto Complete หรือไม่
+    if (lastWords in replacementWords) {
+        var newText = value.substring(0, cursorPos - lastWords.length) + replacementWords[lastWords] + value.substring(cursorPos);
+        this.value = newText;
+        this.selectionStart = this.selectionEnd = cursorPos - lastWords.length + replacementWords[lastWords].length;
+        saveToLocalStorage(this.value); // Save the updated text to localStorage
+    }
+});
 
 
 
+
+
+    //เปลี่ยนเลงอาราบิคเป็นแลขไทย
     function arabicNumberToThaiNumberAndReplace() {
       var text = document.getElementById("textInput").value;
       text = performAdditionalReplacements(text);
