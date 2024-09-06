@@ -8,8 +8,11 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.css">
     <title>Conword</title>
     <link rel="icon" href="./icon.png">
-    <div class="footer">
-      เวอร์ชัน 02.02.09  06/09/67
+    <!-- ลิงก์สำหรับ drag and drop -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/dragula/3.7.3/dragula.min.js"></script>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/dragula/3.7.3/dragula.min.css" />
+        <div class="footer">
+      เวอร์ชัน 02.03.01  06/09/67 14.48 น.
     </div>
     <style>
       body {
@@ -319,7 +322,7 @@
 
   </style>
   
-<link rel="icon" href="./icon.png">
+
 </head>
 <body>
   <div id="clock"></div>
@@ -438,6 +441,11 @@ function loadClipListFromLocalStorage() {
         });
     }
 }
+// โหลดรายการ clipList เมื่อโหลดหน้า
+window.onload = function() {
+    loadClipListFromLocalStorage(); // โหลดรายการ clipList
+};
+
 
 // ฟังก์ชัน addItem ที่อัพเดท
 function addItem() {
@@ -539,10 +547,28 @@ window.onload = function() {
     textEditor.focus();
     }
 
-      function clearAll() {
-          var clipList = document.getElementById("clipList");
-          clipList.innerHTML = "";
-      }
+    // เริ่มการลากและจัดเรียงด้วย Dragula
+    document.addEventListener("DOMContentLoaded", function() {
+        var container = document.getElementById('clipList');
+        dragula([container]).on('drop', function() {
+            saveClipListToLocalStorage(); // บันทึกลำดับใหม่หลังการลาก
+        });
+    });
+
+
+
+
+
+        // ฟังก์ชันล้างรายการทั้งหมดใน clipList และลบข้อมูลจาก localStorage พร้อมการยืนยัน
+        function clearAll() {
+            if (confirm("คุณต้องการล้างรายการทั้งหมดหรือไม่?")) {
+                var clipList = document.getElementById("clipList");
+                clipList.innerHTML = ""; // ล้างรายการทั้งหมดใน clipList
+
+                // ลบข้อมูล clipList จาก localStorage
+                localStorage.removeItem('clipList');
+            }
+        }
 
 
         var textEditor = document.getElementById("textInput");
@@ -1088,6 +1114,97 @@ function updateClock() {
     // รีเซ็ตตัวแปร currentTextareaContent
     currentTextareaContent = "";
     }
+// ฟังก์ชันเพื่อป้องกันไม่ให้ clipList หายไปหลังจากรีเฟรชหน้าเว็บ
+window.onload = function() {
+    var savedText = localStorage.getItem('savedText'); // โหลดข้อความ textarea จาก localStorage
+    if (savedText !== null) {
+        document.getElementById('textInput').value = savedText;
+    }
+    
+    // โหลดรายการ clipList จาก localStorage
+    loadClipListFromLocalStorage();
+};
+
+// ฟังก์ชันบันทึกรายการ clipList ลงใน localStorage
+function saveClipListToLocalStorage() {
+    var clipList = document.getElementById('clipList');
+    var items = [];
+    for (var i = 0; i < clipList.children.length; i++) {
+        items.push(clipList.children[i].querySelector('span').textContent);
+    }
+    localStorage.setItem('clipList', JSON.stringify(items)); // บันทึก clipList ลงใน localStorage
+}
+
+// ฟังก์ชันโหลดรายการ clipList จาก localStorage เมื่อหน้าเว็บถูกโหลด
+function loadClipListFromLocalStorage() {
+    var items = JSON.parse(localStorage.getItem('clipList')); // โหลด clipList จาก localStorage
+    if (items) {
+        var clipList = document.getElementById('clipList');
+        clipList.innerHTML = ''; // ล้างรายการเก่าก่อน
+        items.forEach(function(item) {
+            addClipListItem(item); // เพิ่มรายการกลับมาใน clipList
+        });
+    }
+}
+
+// ฟังก์ชันเพื่อเพิ่มรายการใน clipList (ใช้ในฟังก์ชันโหลด clipList)
+function addClipListItem(itemText) {
+    var clipList = document.getElementById('clipList');
+    var li = document.createElement('li');
+    var span = document.createElement('span');
+    span.textContent = itemText;
+
+    span.onclick = function() {
+        copyToEditor(span); // คัดลอกข้อความไปยัง textarea
+    };
+
+    li.appendChild(span);
+
+    var deleteBtn = document.createElement('button');
+    deleteBtn.innerHTML = '<i class="fas fa-trash-alt"></i>';
+    deleteBtn.className = 'delete';
+    deleteBtn.onclick = function() {
+        clipList.removeChild(li);
+        saveClipListToLocalStorage(); // บันทึกเมื่อมีการลบรายการ
+    };
+
+    li.appendChild(deleteBtn);
+
+    var editBtn = document.createElement('button');
+    editBtn.innerHTML = '<i class="fas fa-edit"></i>';
+    editBtn.className = 'edit';
+    editBtn.onclick = function() {
+        var currentListItem = li;
+        var currentListItemText = span.textContent;
+
+        var textEditor = document.createElement('textarea');
+        textEditor.value = currentListItemText;
+        textEditor.style.width = '99%';
+        textEditor.style.height = '30px';
+
+        li.replaceChild(textEditor, span);
+        textEditor.focus();
+
+        textEditor.onblur = function() {
+            span.textContent = textEditor.value;
+            li.replaceChild(span, textEditor);
+            editBtn.style.display = 'inline';
+            deleteBtn.style.display = 'inline';
+            saveClipListToLocalStorage(); // บันทึกหลังจากการแก้ไข
+        };
+
+        editBtn.style.display = 'none';
+        deleteBtn.style.display = 'none';
+    };
+
+    li.appendChild(editBtn);
+
+    clipList.appendChild(li);
+    saveClipListToLocalStorage(); // บันทึกรายการใหม่ลง localStorage
+}
+
+
+
 
   </script>
 </body>
