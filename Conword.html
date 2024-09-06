@@ -12,7 +12,7 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/dragula/3.7.3/dragula.min.js"></script>
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/dragula/3.7.3/dragula.min.css" />
         <div class="footer">
-      เวอร์ชัน 02.03.01  06/09/67 14.48 น.
+      เวอร์ชัน 02.03.01  06/09/67 15.23 น.
     </div>
     <style>
       body {
@@ -1068,63 +1068,6 @@ function confirmClearText() {
     }
 }
 
-//นาฬิกา
-function updateClock() {
-    var now = new Date();
-    var hours = now.getHours();
-    var minutes = now.getMinutes();
-    var seconds = now.getSeconds();
-    var timeString = 
-        ('0' + hours).slice(-2) + ':' + 
-        ('0' + minutes).slice(-2) + ':' + 
-        ('0' + seconds).slice(-2);
-
-    document.getElementById('clock').textContent = timeString;
-}
-
-    function adjustClipboardHeight() {
-        var textInput = document.getElementById('textInput');
-        var clipboard = document.getElementById('clipboard');
-        clipboard.style.height = textInput.offsetHeight + 'px';
-    }
-
-    window.onload = function() {
-        var savedText = localStorage.getItem('savedText');
-        if (savedText !== null) {
-            document.getElementById('textInput').value = savedText;
-        }
-
-        adjustClipboardHeight();
-        setInterval(updateClock, 1000);
-        updateClock(); // เรียกทันทีเพื่อไม่ให้มีการหน่วงเวลา
-    };
-
-    window.onresize = adjustClipboardHeight;
-
-        function clearText() {
-    // ล้างเนื้อหาของ textarea
-    var textEditor = document.getElementById("textInput");
-    textEditor.value = "";
-
-    // ลบข้อมูล textareaContent จาก localStorage, sessionStorage, หรือ cookies
-    localStorage.removeItem('savedText'); // ลบข้อมูลใน localStorage
-    sessionStorage.removeItem('savedText'); // ลบข้อมูลใน sessionStorage
-
-
-    // รีเซ็ตตัวแปร currentTextareaContent
-    currentTextareaContent = "";
-    }
-// ฟังก์ชันเพื่อป้องกันไม่ให้ clipList หายไปหลังจากรีเฟรชหน้าเว็บ
-window.onload = function() {
-    var savedText = localStorage.getItem('savedText'); // โหลดข้อความ textarea จาก localStorage
-    if (savedText !== null) {
-        document.getElementById('textInput').value = savedText;
-    }
-    
-    // โหลดรายการ clipList จาก localStorage
-    loadClipListFromLocalStorage();
-};
-
 // ฟังก์ชันบันทึกรายการ clipList ลงใน localStorage
 function saveClipListToLocalStorage() {
     var clipList = document.getElementById('clipList');
@@ -1201,6 +1144,54 @@ function addClipListItem(itemText) {
 
     clipList.appendChild(li);
     saveClipListToLocalStorage(); // บันทึกรายการใหม่ลง localStorage
+}
+
+// ฟังก์ชันเพื่อปรับขนาด clipboard
+function adjustClipboardHeight() {
+    var textInput = document.getElementById('textInput');
+    var clipboard = document.getElementById('clipboard');
+    clipboard.style.height = textInput.offsetHeight + 'px';
+}
+
+// ฟังก์ชันเพื่อเคลียร์ข้อมูลใน textarea และ localStorage
+function clearText() {
+    var textEditor = document.getElementById("textInput");
+    textEditor.value = "";
+    localStorage.removeItem('savedText');
+    sessionStorage.removeItem('savedText');
+    currentTextareaContent = "";
+}
+
+// โหลดข้อมูลจาก localStorage เมื่อหน้าเว็บโหลด
+window.onload = function() {
+    var savedText = localStorage.getItem('savedText');
+    if (savedText !== null) {
+        document.getElementById('textInput').value = savedText;
+    }
+
+    loadClipListFromLocalStorage();
+    adjustClipboardHeight();
+    setInterval(updateClock, 1000);
+    updateClock(); // เรียกทันทีเพื่อไม่ให้มีการหน่วงเวลา
+};
+
+window.onresize = adjustClipboardHeight;
+
+// ฟังก์ชันนาฬิกา (อยู่ล่างสุด)
+function updateClock() {
+    var now = new Date();
+    var hours = now.getHours();
+    var minutes = now.getMinutes();
+    var seconds = now.getSeconds();
+    var timeString = 
+        ('0' + hours).slice(-2) + ':' + 
+        ('0' + minutes).slice(-2) + ':' + 
+        ('0' + seconds).slice(-2);
+
+    var clockElement = document.getElementById('clock');
+    if (clockElement) { // ตรวจสอบว่าองค์ประกอบ clock มีอยู่
+        clockElement.textContent = timeString;
+    }
 }
 
 
