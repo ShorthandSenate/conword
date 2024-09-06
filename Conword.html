@@ -11,8 +11,13 @@
     <!-- ลิงก์สำหรับ drag and drop -->
         <script src="https://cdnjs.cloudflare.com/ajax/libs/dragula/3.7.3/dragula.min.js"></script>
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/dragula/3.7.3/dragula.min.css" />
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/dragula/3.7.2/dragula.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/dragula/3.7.2/dragula.min.css"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/dragula/3.7.2/dragula.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/dragula-auto-scroll@2.0.0/scroll.min.js"></script>
+        
         <div class="footer">
-      เวอร์ชัน 02.03.01  06/09/67 15.31 น.
+      เวอร์ชัน 02.03.01  06/09/67 15.48 น.
     </div>
     <style>
       body {
@@ -183,10 +188,11 @@
         /* ป้องกันการเลือกข้อความใน clipList */
         #clipList {
             user-select: none; /* ป้องกันการคลุมดำข้อความ */
-            -webkit-user-select: none; /* สำหรับเบราว์เซอร์ Safari */
-            -ms-user-select: none; /* สำหรับเบราว์เซอร์ Internet Explorer */
-        }      
-
+            -webkit-user-select: none; /* ป้องกันการคลุมดำใน Safari */
+            -ms-user-select: none; /* ป้องกันการคลุมดำใน IE */
+            /* ลบ touch-action: none; ออก เพื่อให้การเลื่อนทำงาน */
+        }
+        
       .action-btn {
           top: 64px;
           z-index: 1;
@@ -555,10 +561,21 @@ window.onload = function() {
     }
 
     // เริ่มการลากและจัดเรียงด้วย Dragula
-    document.addEventListener("DOMContentLoaded", function() {
+        document.addEventListener("DOMContentLoaded", function() {
         var container = document.getElementById('clipList');
-        dragula([container]).on('drop', function() {
-            saveClipListToLocalStorage(); // บันทึกลำดับใหม่หลังการลาก
+
+        var drake = dragula([container]);
+
+        // เพิ่มฟังก์ชันเลื่อนอัตโนมัติเมื่อทำการลาก
+        autoScroll([window], {
+            margin: 20,  // ระยะห่างจากขอบหน้าจอเมื่อเริ่มการเลื่อน
+            maxSpeed: 10,  // ความเร็วสูงสุดในการเลื่อน
+            scrollWhenOutside: true // เลื่อนเมื่ออยู่ภายนอก container
+        }).listen(drake);
+
+        // เมื่อมีการเปลี่ยนลำดับรายการ
+        drake.on('drop', function () {
+            saveClipListToLocalStorage(); // บันทึกลำดับใหม่ลง localStorage
         });
     });
 
