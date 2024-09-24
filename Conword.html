@@ -17,8 +17,12 @@
         <script src="https://cdn.jsdelivr.net/npm/dragula-auto-scroll@2.0.0/scroll.min.js"></script>
         
         <div class="footer">
-      เวอร์ชัน 02.03.01  06/09/67 15.48 น.
+      เวอร์ชัน 02.03.02  06/09/67 15.48 น.
+      <div> <a href="https://www.canva.com/design/DAGQm3V8WFA/FJqJY5z6LUMYFrRvCZsr2w/edit?utm_content=DAGQm3V8WFA&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton" target="_blank">คู่มือ</a></div>
+      
     </div>
+
+  
     <style>
       body {
           background-color: #b5bdc3;
@@ -561,23 +565,45 @@ window.onload = function() {
     }
 
     // เริ่มการลากและจัดเรียงด้วย Dragula
-        document.addEventListener("DOMContentLoaded", function() {
-        var container = document.getElementById('clipList');
+    document.addEventListener("DOMContentLoaded", function() {
+    var container = document.getElementById('clipList');
+    var isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
 
-        var drake = dragula([container]);
+    // ฟังก์ชันการลากทั่วไป (สำหรับ PC)
+    var drake = dragula([container]);
 
-        // เพิ่มฟังก์ชันเลื่อนอัตโนมัติเมื่อทำการลาก
-        autoScroll([window], {
-            margin: 20,  // ระยะห่างจากขอบหน้าจอเมื่อเริ่มการเลื่อน
-            maxSpeed: 10,  // ความเร็วสูงสุดในการเลื่อน
-            scrollWhenOutside: true // เลื่อนเมื่ออยู่ภายนอก container
-        }).listen(drake);
+    if (isTouchDevice) {
+        // สำหรับอุปกรณ์สัมผัส: กดค้างไว้ 1 วินาทีเพื่อเริ่มลาก
+        var longPressTimer;
 
-        // เมื่อมีการเปลี่ยนลำดับรายการ
-        drake.on('drop', function () {
-            saveClipListToLocalStorage(); // บันทึกลำดับใหม่ลง localStorage
+        container.addEventListener('touchstart', function(event) {
+            var target = event.target;
+
+            longPressTimer = setTimeout(function() {
+                // เริ่มการลากเมื่อกดค้าง 1 วินาที
+                drake.manualStart(target);
+            }, 1000); // ตั้งเวลาการกดค้าง 1 วินาที
         });
+
+        container.addEventListener('touchend', function() {
+            clearTimeout(longPressTimer); // ยกเลิกการกดค้างเมื่อปล่อย
+        });
+
+        container.addEventListener('touchmove', function() {
+            clearTimeout(longPressTimer); // ยกเลิกเมื่อมีการเลื่อนนิ้ว
+        });
+    }
+
+    autoScroll([window], {
+        margin: 20,
+        maxSpeed: 10,
+        scrollWhenOutside: true
+    }).listen(drake);
+
+    drake.on('drop', function() {
+        saveClipListToLocalStorage();
     });
+});
 
 
 
