@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.14.0/Sortable.min.css" />
     <title>Conword</title>
     <link rel="icon" href="./icon.png">
     <!-- ลิงก์สำหรับ drag and drop -->
@@ -15,9 +16,11 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/dragula/3.7.2/dragula.min.css"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/dragula/3.7.2/dragula.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/dragula-auto-scroll@2.0.0/scroll.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/dragula/3.7.2/dragula.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.14.0/Sortable.min.js"></script>
         
         <div class="footer">
-      เวอร์ชัน 02.03.08  06/09/67 15.48 น.
+      เวอร์ชัน 02.03.09  06/09/67 15.48 น.
       <div> <a href="https://www.canva.com/design/DAGQm3V8WFA/FJqJY5z6LUMYFrRvCZsr2w/edit?utm_content=DAGQm3V8WFA&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton" target="_blank">คู่มือ</a></div>
       
     </div>
@@ -573,60 +576,39 @@ window.onload = function() {
 
     // เริ่มการลากและจัดเรียงด้วย Dragula ----------------------------------------------------------------
     document.addEventListener("DOMContentLoaded", function() {
-    var container = document.getElementById('clipList');
-    var isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+            var container = document.getElementById('clipList');
+            var isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
 
-    // ฟังก์ชันการลากทั่วไป (สำหรับ PC)
-    var drake = dragula([container], {
-        moves: function (el, source, handle, sibling) {
-            return !isTouchDevice; // อนุญาตให้ลากเฉพาะบน PC
-        }
-    });
+            if (!isTouchDevice) {
+                // Dragula สำหรับ PC
+                var drake = dragula([container], {
+                    moves: function (el, source, handle, sibling) {
+                        return true; // อนุญาตให้ลากได้
+                    }
+                });
 
-    if (isTouchDevice) {
-        var items = container.querySelectorAll('li');
-        items.forEach(function(item) {
-            var upButton = document.createElement('button');
-            var downButton = document.createElement('button');
+                drake.on('drop', function() {
+                    saveClipListToLocalStorage(); // บันทึกลำดับใหม่ลงใน localStorage
+                });
+            } else {
+                // SortableJS สำหรับอุปกรณ์สัมผัส
+                var sortable = Sortable.create(container, {
+                    animation: 150,
+                    onEnd: function () {
+                        saveClipListToLocalStorage(); // บันทึกลำดับใหม่ลงใน localStorage
+                    }
+                });
+            }
 
-            upButton.textContent = 'เลื่อนขึ้น';
-            downButton.textContent = 'เลื่อนลง';
-
-            // เพิ่มฟังก์ชันเลื่อนขึ้น
-            upButton.addEventListener('click', function() {
-                var prevItem = item.previousElementSibling;
-                if (prevItem) {
-                    container.insertBefore(item, prevItem);
-                }
-            });
-
-            // เพิ่มฟังก์ชันเลื่อนลง
-            downButton.addEventListener('click', function() {
-                var nextItem = item.nextElementSibling;
-                if (nextItem) {
-                    container.insertBefore(nextItem, item);
-                }
-            });
-
-            item.appendChild(upButton);
-            item.appendChild(downButton);
+            // ฟังก์ชันบันทึกลิสต์ใน localStorage
+            function saveClipListToLocalStorage() {
+                var items = Array.from(container.querySelectorAll('li'));
+                var clipListOrder = items.map(function(item) {
+                    return item.textContent; // หรือข้อมูลที่คุณต้องการบันทึก
+                });
+                localStorage.setItem('clipListOrder', JSON.stringify(clipListOrder));
+            }
         });
-    }
-
-    drake.on('drop', function() {
-        saveClipListToLocalStorage(); // บันทึกลำดับใหม่ลงใน localStorage
-    });
-
-    // ฟังก์ชันการบันทึกลิสต์ใน localStorage
-    function saveClipListToLocalStorage() {
-        var items = Array.from(container.querySelectorAll('li'));
-        var clipListOrder = items.map(function(item) {
-            return item.textContent; // หรือข้อมูลที่คุณต้องการบันทึก
-        });
-        localStorage.setItem('clipListOrder', JSON.stringify(clipListOrder));
-    }
-});
-
 
 
 
