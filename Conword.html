@@ -17,7 +17,7 @@
         <script src="https://cdn.jsdelivr.net/npm/dragula-auto-scroll@2.0.0/scroll.min.js"></script>
         
         <div class="footer">
-      เวอร์ชัน 02.03.07  06/09/67 15.48 น.
+      เวอร์ชัน 02.03.08  06/09/67 15.48 น.
       <div> <a href="https://www.canva.com/design/DAGQm3V8WFA/FJqJY5z6LUMYFrRvCZsr2w/edit?utm_content=DAGQm3V8WFA&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton" target="_blank">คู่มือ</a></div>
       
     </div>
@@ -579,57 +579,38 @@ window.onload = function() {
     // ฟังก์ชันการลากทั่วไป (สำหรับ PC)
     var drake = dragula([container], {
         moves: function (el, source, handle, sibling) {
-            return !isTouchDevice; // สำหรับอุปกรณ์สัมผัสจะไม่อนุญาตให้ลาก
+            return !isTouchDevice; // อนุญาตให้ลากเฉพาะบน PC
         }
     });
 
-    // เพิ่มปุ่มปรับรายการสำหรับอุปกรณ์สัมผัส
     if (isTouchDevice) {
-        var adjustButton = document.createElement('button');
-        adjustButton.textContent = 'ปรับรายการ';
-        adjustButton.addEventListener('click', toggleAdjustMode);
-        container.appendChild(adjustButton);
-        
-        function toggleAdjustMode() {
-            var items = container.querySelectorAll('li');
-            items.forEach(function(item) {
-                var upButton = document.createElement('button');
-                var downButton = document.createElement('button');
-                var finishButton = document.createElement('button');
+        var items = container.querySelectorAll('li');
+        items.forEach(function(item) {
+            var upButton = document.createElement('button');
+            var downButton = document.createElement('button');
 
-                upButton.textContent = 'เลื่อนขึ้น';
-                downButton.textContent = 'เลื่อนลง';
-                finishButton.textContent = 'เสร็จสิ้น';
+            upButton.textContent = 'เลื่อนขึ้น';
+            downButton.textContent = 'เลื่อนลง';
 
-                // เพิ่มฟังก์ชันเลื่อนขึ้น
-                upButton.addEventListener('click', function() {
-                    var prevItem = item.previousElementSibling;
-                    if (prevItem) {
-                        container.insertBefore(item, prevItem);
-                    }
-                });
-
-                // เพิ่มฟังก์ชันเลื่อนลง
-                downButton.addEventListener('click', function() {
-                    var nextItem = item.nextElementSibling;
-                    if (nextItem) {
-                        container.insertBefore(nextItem, item);
-                    }
-                });
-
-                // ซ่อนปุ่มเมื่อเสร็จสิ้น
-                finishButton.addEventListener('click', function() {
-                    upButton.remove();
-                    downButton.remove();
-                    finishButton.remove();
-                    saveClipListToLocalStorage(); // บันทึกลำดับใหม่ลงใน localStorage
-                });
-
-                item.appendChild(upButton);
-                item.appendChild(downButton);
-                item.appendChild(finishButton);
+            // เพิ่มฟังก์ชันเลื่อนขึ้น
+            upButton.addEventListener('click', function() {
+                var prevItem = item.previousElementSibling;
+                if (prevItem) {
+                    container.insertBefore(item, prevItem);
+                }
             });
-        }
+
+            // เพิ่มฟังก์ชันเลื่อนลง
+            downButton.addEventListener('click', function() {
+                var nextItem = item.nextElementSibling;
+                if (nextItem) {
+                    container.insertBefore(nextItem, item);
+                }
+            });
+
+            item.appendChild(upButton);
+            item.appendChild(downButton);
+        });
     }
 
     drake.on('drop', function() {
