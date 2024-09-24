@@ -17,7 +17,7 @@
         <script src="https://cdn.jsdelivr.net/npm/dragula-auto-scroll@2.0.0/scroll.min.js"></script>
         
         <div class="footer">
-      เวอร์ชัน 02.03.02  06/09/67 15.48 น.
+      เวอร์ชัน 02.03.03  06/09/67 15.48 น.
       <div> <a href="https://www.canva.com/design/DAGQm3V8WFA/FJqJY5z6LUMYFrRvCZsr2w/edit?utm_content=DAGQm3V8WFA&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton" target="_blank">คู่มือ</a></div>
       
     </div>
@@ -301,6 +301,13 @@
     transition: all 0.3s ease; /* เพิ่มการเปลี่ยนแปลงนุ่มนวล */
 }
 
+.dragging {
+    opacity: 0.8;
+    transform: scale(1.05); /* ขยายรายการเล็กน้อยให้ดูเหมือนลอย */
+    transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+
 @media (max-width: 900px) {
     #clock {
         font-size: 14px; /* ลดขนาดอักษร */
@@ -573,24 +580,37 @@ window.onload = function() {
     var drake = dragula([container]);
 
     if (isTouchDevice) {
-        // สำหรับอุปกรณ์สัมผัส: กดค้างไว้ 1 วินาทีเพื่อเริ่มลาก
         var longPressTimer;
+        var draggedElement; // เก็บรายการที่ถูกลาก
 
         container.addEventListener('touchstart', function(event) {
             var target = event.target;
 
-            longPressTimer = setTimeout(function() {
-                // เริ่มการลากเมื่อกดค้าง 1 วินาที
-                drake.manualStart(target);
-            }, 1000); // ตั้งเวลาการกดค้าง 1 วินาที
+            // ตรวจสอบว่าถูกกดที่รายการ
+            if (target.tagName.toLowerCase() === 'li') {
+                // เริ่มจับเวลาหลังจากกดค้าง 1 วินาที
+                longPressTimer = setTimeout(function() {
+                    // ทำให้รายการลอยขึ้น
+                    target.classList.add('dragging');
+                    drake.manualStart(target); // เริ่มลากรายการ
+
+                    draggedElement = target; // บันทึกรายการที่ถูกลาก
+                }, 1000); // กดค้าง 1 วินาที
+            }
         });
 
         container.addEventListener('touchend', function() {
-            clearTimeout(longPressTimer); // ยกเลิกการกดค้างเมื่อปล่อย
+            clearTimeout(longPressTimer); // ยกเลิกการจับเวลาหากปล่อยก่อน 1 วินาที
+
+            if (draggedElement) {
+                // นำคลาส "dragging" ออกเมื่อปล่อย
+                draggedElement.classList.remove('dragging');
+                draggedElement = null; // รีเซ็ตตัวแปร
+            }
         });
 
         container.addEventListener('touchmove', function() {
-            clearTimeout(longPressTimer); // ยกเลิกเมื่อมีการเลื่อนนิ้ว
+            clearTimeout(longPressTimer); // ยกเลิกการจับเวลาหากมีการเลื่อนนิ้ว
         });
     }
 
@@ -601,7 +621,7 @@ window.onload = function() {
     }).listen(drake);
 
     drake.on('drop', function() {
-        saveClipListToLocalStorage();
+        saveClipListToLocalStorage(); // บันทึกลำดับใหม่ลงใน localStorage
     });
 });
 
