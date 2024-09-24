@@ -20,7 +20,7 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.14.0/Sortable.min.js"></script>
         
         <div class="footer">
-      เวอร์ชัน 02.03.10  06/09/67 15.48 น.
+      เวอร์ชัน 02.03.11  06/09/67 15.48 น.
       <div> <a href="https://www.canva.com/design/DAGQm3V8WFA/FJqJY5z6LUMYFrRvCZsr2w/edit?utm_content=DAGQm3V8WFA&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton" target="_blank">คู่มือ</a></div>
       
     </div>
@@ -636,7 +636,10 @@ window.onload = function() {
                 });
 
                 container.addEventListener('touchmove', function() {
-                    clearTimeout(longPressTimer); // ยกเลิกการจับเวลาหากมีการเลื่อนนิ้วก่อนครบ 1 วินาที
+                    // ตรวจสอบว่ากำลังลากอยู่
+                    if (sortable) {
+                        sortable._onTouchMove(event); // เรียกใช้ฟังก์ชันการลากตามการเคลื่อนไหว
+                    }
                 });
 
                 // ฟังก์ชันล็อกรายการ
@@ -657,7 +660,6 @@ window.onload = function() {
                 localStorage.setItem('clipListOrder', JSON.stringify(clipListOrder));
             }
         });
-
 
 
         // ฟังก์ชันล้างรายการทั้งหมดใน clipList และลบข้อมูลจาก localStorage พร้อมการยืนยัน
