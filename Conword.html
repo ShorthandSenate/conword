@@ -20,7 +20,7 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.14.0/Sortable.min.js"></script>
         
         <div class="footer">
-      เวอร์ชัน 02.03.09  06/09/67 15.48 น.
+      เวอร์ชัน 02.03.10  06/09/67 15.48 น.
       <div> <a href="https://www.canva.com/design/DAGQm3V8WFA/FJqJY5z6LUMYFrRvCZsr2w/edit?utm_content=DAGQm3V8WFA&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton" target="_blank">คู่มือ</a></div>
       
     </div>
@@ -591,13 +591,61 @@ window.onload = function() {
                     saveClipListToLocalStorage(); // บันทึกลำดับใหม่ลงใน localStorage
                 });
             } else {
-                // SortableJS สำหรับอุปกรณ์สัมผัส
-                var sortable = Sortable.create(container, {
-                    animation: 150,
-                    onEnd: function () {
-                        saveClipListToLocalStorage(); // บันทึกลำดับใหม่ลงใน localStorage
+                // Lock the items initially
+                container.classList.add('locked');
+
+                var longPressTimer;
+                var sortable;
+                var draggingElement;
+
+                // ตั้งค่า touch event
+                container.addEventListener('touchstart', function(event) {
+                    var target = event.target.closest('li'); // ตรวจสอบว่าถูกกดที่รายการ 'li'
+
+                    if (target) {
+                        // เริ่มจับเวลาหลังจากกดค้าง 1 วินาที
+                        longPressTimer = setTimeout(function() {
+                            // เปิดการลากวาง
+                            sortable = Sortable.create(container, {
+                                animation: 150,
+                                onStart: function(evt) {
+                                    target.classList.add('dragging'); // เพิ่มคลาส dragging
+                                },
+                                onEnd: function() {
+                                    saveClipListToLocalStorage(); // บันทึกลำดับใหม่ลงใน localStorage
+                                    target.classList.remove('dragging'); // ลบคลาส dragging
+                                    lockItems(); // ล็อกรายการเมื่อเสร็จสิ้น
+                                }
+                            });
+                            target.classList.add('dragging'); // เพิ่มคลาส dragging
+                            sortable.start(); // เริ่มการลาก
+                            draggingElement = target; // บันทึกรายการที่ถูกลาก
+                        }, 1000); // กดค้าง 1 วินาที
                     }
                 });
+
+                container.addEventListener('touchend', function() {
+                    clearTimeout(longPressTimer); // ยกเลิกการจับเวลาหากปล่อยก่อน 1 วินาที
+
+                    if (draggingElement) {
+                        // นำคลาส "dragging" ออกเมื่อปล่อย
+                        draggingElement.classList.remove('dragging');
+                        draggingElement = null; // รีเซ็ตตัวแปร
+                        lockItems(); // ล็อกรายการเมื่อปล่อย
+                    }
+                });
+
+                container.addEventListener('touchmove', function() {
+                    clearTimeout(longPressTimer); // ยกเลิกการจับเวลาหากมีการเลื่อนนิ้วก่อนครบ 1 วินาที
+                });
+
+                // ฟังก์ชันล็อกรายการ
+                function lockItems() {
+                    container.classList.add('locked');
+                    if (sortable) {
+                        sortable.destroy(); // ทำลาย sortable หากมี
+                    }
+                }
             }
 
             // ฟังก์ชันบันทึกลิสต์ใน localStorage
@@ -609,7 +657,6 @@ window.onload = function() {
                 localStorage.setItem('clipListOrder', JSON.stringify(clipListOrder));
             }
         });
-
 
 
 
