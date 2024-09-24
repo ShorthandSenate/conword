@@ -17,7 +17,7 @@
         <script src="https://cdn.jsdelivr.net/npm/dragula-auto-scroll@2.0.0/scroll.min.js"></script>
         
         <div class="footer">
-      เวอร์ชัน 02.03.04  06/09/67 15.48 น.
+      เวอร์ชัน 02.03.05  06/09/67 15.48 น.
       <div> <a href="https://www.canva.com/design/DAGQm3V8WFA/FJqJY5z6LUMYFrRvCZsr2w/edit?utm_content=DAGQm3V8WFA&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton" target="_blank">คู่มือ</a></div>
       
     </div>
@@ -582,8 +582,8 @@ window.onload = function() {
             // สำหรับ PC ลากได้ตามปกติ
             if (!isTouchDevice) return true;
             
-            // สำหรับอุปกรณ์สัมผัส ให้ล็อคไว้ก่อน
-            return el.classList.contains('dragging');
+            // สำหรับอุปกรณ์สัมผัส จะล็อคการลากก่อนจนกว่าจะถูกปลดล็อคโดยการกดค้าง
+            return el.classList.contains('dragging'); 
         }
     });
 
@@ -592,16 +592,15 @@ window.onload = function() {
         var draggedElement; // เก็บรายการที่ถูกลาก
 
         container.addEventListener('touchstart', function(event) {
-            var target = event.target;
+            var target = event.target.closest('li'); // ตรวจสอบว่าถูกกดที่รายการ 'li'
 
-            // ตรวจสอบว่าถูกกดที่รายการ
-            if (target.tagName.toLowerCase() === 'li') {
+            // ตรวจสอบว่ามีการกดที่รายการ 'li'
+            if (target) {
                 // เริ่มจับเวลาหลังจากกดค้าง 1 วินาที
                 longPressTimer = setTimeout(function() {
-                    // ทำให้รายการลอยขึ้น
+                    // ทำให้รายการลอยขึ้นและเริ่มลาก
                     target.classList.add('dragging');
-                    drake.manualStart(target); // เริ่มลากรายการ
-
+                    drake.manualStart(target); // เริ่มการลากโดย manual
                     draggedElement = target; // บันทึกรายการที่ถูกลาก
                 }, 1000); // กดค้าง 1 วินาที
             }
@@ -618,7 +617,7 @@ window.onload = function() {
         });
 
         container.addEventListener('touchmove', function() {
-            clearTimeout(longPressTimer); // ยกเลิกการจับเวลาหากมีการเลื่อนนิ้ว
+            clearTimeout(longPressTimer); // ยกเลิกการจับเวลาหากมีการเลื่อนนิ้วก่อนครบ 1 วินาที
         });
     }
 
