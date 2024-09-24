@@ -17,7 +17,7 @@
         <script src="https://cdn.jsdelivr.net/npm/dragula-auto-scroll@2.0.0/scroll.min.js"></script>
         
         <div class="footer">
-      เวอร์ชัน 02.03.03  06/09/67 15.48 น.
+      เวอร์ชัน 02.03.04  06/09/67 15.48 น.
       <div> <a href="https://www.canva.com/design/DAGQm3V8WFA/FJqJY5z6LUMYFrRvCZsr2w/edit?utm_content=DAGQm3V8WFA&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton" target="_blank">คู่มือ</a></div>
       
     </div>
@@ -571,13 +571,21 @@ window.onload = function() {
     textEditor.focus();
     }
 
-    // เริ่มการลากและจัดเรียงด้วย Dragula
+    // เริ่มการลากและจัดเรียงด้วย Dragula ----------------------------------------------------------------
     document.addEventListener("DOMContentLoaded", function() {
     var container = document.getElementById('clipList');
     var isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
 
     // ฟังก์ชันการลากทั่วไป (สำหรับ PC)
-    var drake = dragula([container]);
+    var drake = dragula([container], {
+        moves: function (el, source, handle, sibling) {
+            // สำหรับ PC ลากได้ตามปกติ
+            if (!isTouchDevice) return true;
+            
+            // สำหรับอุปกรณ์สัมผัส ให้ล็อคไว้ก่อน
+            return el.classList.contains('dragging');
+        }
+    });
 
     if (isTouchDevice) {
         var longPressTimer;
