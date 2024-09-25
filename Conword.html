@@ -9,15 +9,11 @@
     <title>Conword</title>
     <link rel="icon" href="./icon.png">
     <!-- ลิงก์สำหรับ drag and drop -->
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/dragula/3.7.3/dragula.min.js"></script>
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/dragula/3.7.3/dragula.min.css" />
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/dragula/3.7.2/dragula.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/dragula/3.7.2/dragula.min.css"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/dragula/3.7.2/dragula.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/dragula-auto-scroll@2.0.0/scroll.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.14.0/Sortable.min.js"></script>
+
         
         <div class="footer">
-      เวอร์ชัน 02.03.01  06/09/67 15.48 น.
+      เวอร์ชัน 03.00.00  25/09/67 12.22 น.
       <div> <a href="https://www.canva.com/design/DAGQm3V8WFA/FJqJY5z6LUMYFrRvCZsr2w/edit?utm_content=DAGQm3V8WFA&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton" target="_blank">คู่มือ</a></div>
       
     </div>
@@ -336,6 +332,37 @@
     }
 }
 
+/*ปรับขนาดปุ่มไอคอนในการย้ายรายการ*/
+.drag-handle {
+    background: none;
+    border: none;
+    cursor: move; /* เปลี่ยนรูป cursor เมื่อ hover */
+    padding-left: 1px;
+    padding-right: 5px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    display: inline-flex; /* ปรับขนาดให้เล็กพอดีกับไอคอน */
+    align-items: center;
+    justify-content: flex-start; /* จัดตำแหน่งให้ชิดซ้าย */
+    font-size: 12px; /* ขนาดของไอคอนยังคงเท่าเดิม */
+    margin-right: 4px; /* ระยะห่างด้านขวา */
+    margin-left: 0;
+}
+
+/* ปรับขนาดไอคอนสำหรับอุปกรณ์ที่เป็นระบบสัมผัส */
+@media (hover: none) and (pointer: coarse) {
+    .drag-handle {
+        font-size: 18px; /* ขนาดของไอคอนที่เพิ่มขึ้น */
+        padding-left: 1px;
+        padding-right: 8px;
+        padding-top: 7px;
+        padding-bottom: 7px;
+        background-color: none; /* เพิ่มสีพื้นหลังเล็กน้อย */
+        border-radius: 5px; /* เพิ่มมุมให้เรียบ */
+    }
+}
+
+
 
   </style>
   
@@ -564,24 +591,8 @@ window.onload = function() {
     textEditor.focus();
     }
 
-    // เริ่มการลากและจัดเรียงด้วย Dragula
-        document.addEventListener("DOMContentLoaded", function() {
-        var container = document.getElementById('clipList');
 
-        var drake = dragula([container]);
 
-        // เพิ่มฟังก์ชันเลื่อนอัตโนมัติเมื่อทำการลาก
-        autoScroll([window], {
-            margin: 20,  // ระยะห่างจากขอบหน้าจอเมื่อเริ่มการเลื่อน
-            maxSpeed: 10,  // ความเร็วสูงสุดในการเลื่อน
-            scrollWhenOutside: true // เลื่อนเมื่ออยู่ภายนอก container
-        }).listen(drake);
-
-        // เมื่อมีการเปลี่ยนลำดับรายการ
-        drake.on('drop', function () {
-            saveClipListToLocalStorage(); // บันทึกลำดับใหม่ลง localStorage
-        });
-    });
 
 
 
@@ -1118,17 +1129,78 @@ function loadClipListFromLocalStorage() {
     }
 }
 
-// ฟังก์ชันเพื่อเพิ่มรายการใน clipList (ใช้ในฟังก์ชันโหลด clipList)
+    // ฟังก์ชันเพื่อเพิ่มรายการใน clipList
+    function addClipListItem(itemText) {
+        var clipList = document.getElementById('clipList');
+        var li = document.createElement('li');
+
+        // เพิ่มปุ่มไอคอนสำหรับลากรายการ และนำไปไว้ข้างหน้าสุด
+        var dragBtn = document.createElement('button');
+        dragBtn.innerHTML = '<i class="fas fa-grip-lines"></i>';
+        dragBtn.className = 'drag-handle'; // คลาสสำหรับลากรายการ
+        li.appendChild(dragBtn); // เพิ่มปุ่มนี้ก่อน span
+
+        var span = document.createElement('span');
+        span.textContent = itemText;
+        li.appendChild(span);
+
+        var deleteBtn = document.createElement('button');
+        deleteBtn.innerHTML = '<i class="fas fa-trash-alt"></i>';
+        deleteBtn.className = 'delete';
+        deleteBtn.onclick = function() {
+            clipList.removeChild(li);
+            saveClipListToLocalStorage(); // บันทึกเมื่อมีการลบรายการ
+        };
+        li.appendChild(deleteBtn);
+
+        var editBtn = document.createElement('button');
+        editBtn.innerHTML = '<i class="fas fa-edit"></i>';
+        editBtn.className = 'edit';
+        editBtn.onclick = function() {
+            var currentListItem = li;
+            var currentListItemText = span.textContent;
+
+            var textEditor = document.createElement('textarea');
+            textEditor.value = currentListItemText;
+            textEditor.style.width = '99%';
+            textEditor.style.height = '30px';
+
+            li.replaceChild(textEditor, span);
+            textEditor.focus();
+
+            textEditor.onblur = function() {
+                span.textContent = textEditor.value;
+                li.replaceChild(span, textEditor);
+                editBtn.style.display = 'inline';
+                deleteBtn.style.display = 'inline';
+                saveClipListToLocalStorage(); // บันทึกหลังจากการแก้ไข
+            };
+
+            editBtn.style.display = 'none';
+            deleteBtn.style.display = 'none';
+        };
+        li.appendChild(editBtn);
+
+        clipList.appendChild(li);
+        saveClipListToLocalStorage(); // บันทึกรายการใหม่ลง localStorage
+    }
+
+// ฟังก์ชันเพื่อเพิ่มรายการใน clipList
 function addClipListItem(itemText) {
     var clipList = document.getElementById('clipList');
     var li = document.createElement('li');
+
+    // เพิ่มปุ่มไอคอนสำหรับลากรายการ และนำไปไว้ข้างหน้าสุด
+    var dragBtn = document.createElement('button');
+    dragBtn.innerHTML = '<i class="fas fa-grip-lines"></i>';
+    dragBtn.className = 'drag-handle'; // คลาสสำหรับลากรายการ
+    li.appendChild(dragBtn); // เพิ่มปุ่มนี้ก่อน span
+
     var span = document.createElement('span');
     span.textContent = itemText;
-
     span.onclick = function() {
         copyToEditor(span); // คัดลอกข้อความไปยัง textarea
     };
-
     li.appendChild(span);
 
     var deleteBtn = document.createElement('button');
@@ -1138,7 +1210,6 @@ function addClipListItem(itemText) {
         clipList.removeChild(li);
         saveClipListToLocalStorage(); // บันทึกเมื่อมีการลบรายการ
     };
-
     li.appendChild(deleteBtn);
 
     var editBtn = document.createElement('button');
@@ -1167,12 +1238,35 @@ function addClipListItem(itemText) {
         editBtn.style.display = 'none';
         deleteBtn.style.display = 'none';
     };
-
     li.appendChild(editBtn);
 
     clipList.appendChild(li);
     saveClipListToLocalStorage(); // บันทึกรายการใหม่ลง localStorage
 }
+
+// ฟังก์ชันเริ่มการลากและจัดเรียงด้วย Sortable.js
+function initializeSortable() {
+    var container = document.getElementById('clipList');
+
+    // สร้าง Sortable instance ถ้ายังไม่ได้ถูกสร้าง
+    if (!container.sortable) {
+        new Sortable(container, {
+            handle: '.drag-handle', // ใช้ปุ่มไอคอนในการลากรายการ
+            animation: 150, // แอนิเมชันการลาก
+            onEnd: function (evt) {
+                saveClipListToLocalStorage(); // บันทึกตำแหน่งใหม่เมื่อมีการลากรายการ
+            }
+        });
+    }
+}
+
+// เรียกใช้ initializeSortable เมื่อโหลดเริ่มต้น
+document.addEventListener("DOMContentLoaded", function() {
+    initializeSortable();
+});
+
+
+
 
 // ฟังก์ชันเพื่อปรับขนาด clipboard
 function adjustClipboardHeight() {
