@@ -1,22 +1,33 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
-  
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Conword</title>
+    
+    <!-- ลิงก์สำหรับไอคอนและ CSS ของ jQuery UI -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.css">
-    <title>Conword</title>
+    
+    <!-- Favicon -->
     <link rel="icon" href="./icon.png">
-    <!-- ลิงก์สำหรับ drag and drop -->
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.14.0/Sortable.min.js"></script>
+</head>
+<body>
 
-        
-        <div class="footer">
-      เวอร์ชัน 03.01.00  26/09/67 10.00 น.
-      <div> <a href="https://www.canva.com/design/DAGQm3V8WFA/FJqJY5z6LUMYFrRvCZsr2w/edit?utm_content=DAGQm3V8WFA&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton" target="_blank">คู่มือ</a></div>
-      
+    <!-- ส่วนของเนื้อหา -->
+    <div class="footer">
+        เวอร์ชัน 03.02.00  26/09/67 13.00 น.
+        <div>
+            <a href="https://www.canva.com/design/DAGQm3V8WFA/FJqJY5z6LUMYFrRvCZsr2w/edit?utm_content=DAGQm3V8WFA&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton" target="_blank">
+                คู่มือ
+            </a>
+        </div>
     </div>
+
+    <!-- ลิงก์สำหรับ drag and drop -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.14.0/Sortable.min.js"></script>
+    
+</body>
 
   
     <style>
@@ -29,18 +40,6 @@
           margin: 0;
           font-family: 'Tahoma', sans-serif;
       }
-
-      textarea {
-        width: 100%;         /* ให้ textarea ขยายเต็มพื้นที่ */
-        height: auto;        /* ปรับความสูงอัตโนมัติ */
-        min-height: 30px;    /* กำหนดความสูงขั้นต่ำ */
-        padding: 5px;        /* เพิ่ม padding ให้ข้อความอยู่ภายใน */
-        box-sizing: border-box; /* คำนวณขนาดรวม padding และ border */
-        overflow-y: auto;    /* ให้แสดง scrollbar ถ้ามีเนื้อหามาก */
-        resize: none;        /* ปิดการขยายขนาด textarea */
-        z-index: 1000; /* ให้ textarea อยู่ด้านบน */
-        position: relative; /* ใช้ z-index ร่วมกับ position */
-    }
 
       #container {
           width: 100%;
@@ -266,73 +265,94 @@
           cursor: pointer;
       }
 
-      /* ปรับการจัดเรียงสำหรับอุปกรณ์ระบบสัมผัส */
-    @media (hover: none) and (pointer: coarse) {
+        /* ปรับการจัดการปุ่มให้เหมือนกันทั้ง PC และอุปกรณ์ระบบสัมผัส */
         li {
-            display: flex; /* ใช้ flexbox */
-            justify-content: space-between; /* จัดระยะห่างระหว่างข้อความและปุ่ม */
-            align-items: center; /* จัดให้องค์ประกอบอยู่ในแนวเดียวกัน */
             width: 92%;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-            border: 1px solid #d3dcff6c;
-            padding: 10px;
+            padding: 9px;
             margin-bottom: 5px;
             border-radius: 5px;
             background-color: #d3dcff6c;
+            border: 1px solid #d3dcff6c;
+            overflow: hidden;
+            white-space: wrap;
+            text-overflow: ellipsis;
+            position: relative; /* ใช้ position relative เพื่อให้ปุ่มจัดวางได้ง่าย */
         }
 
-        /* ปรับขนาดและระยะห่างของปุ่ม */
+        /* ทำให้ปุ่มอยู่ทางขวาสุด */
         button.edit, button.delete {
-            border: none;
             background: none;
+            border: none;
             cursor: pointer;
             font-size: 1em;
-            color: rgba(57, 57, 57, 0.765);
-            padding: 5px; /* เพิ่ม padding เพื่อให้คลิกง่ายขึ้น */
+            position: absolute; /* ใช้ position absolute เพื่อควบคุมตำแหน่งของปุ่ม */
+            top: 50%; /* ทำให้ปุ่มอยู่กึ่งกลางแนวตั้ง */
+            transform: translateY(-50%); /* เลื่อนปุ่มขึ้นมาให้อยู่กึ่งกลางพอดี */
         }
 
+        /* ปุ่ม Edit อยู่ทางขวาก่อนปุ่ม Delete */
         button.edit {
-            margin-left: 10px; /* ระยะห่างจากข้อความ */
+            right: 35px; /* ระยะห่างจากขอบขวา */
+            color: rgb(104, 104, 104); /* ตั้งค่าสีของปุ่ม Edit เป็นสีเทา */
+
         }
 
+        /* ปุ่ม Delete อยู่ทางขวาสุด */
         button.delete {
-            color: rgba(57, 57, 57, 0.765);
-            font-size: 50%;
-            margin-left: auto; /* ผลักดันปุ่ม delete ไปทางขวา */
+            right: 10px; /* ระยะห่างจากขอบขวา */
+            color: rgb(104, 104, 104); /* ตั้งค่าสีของปุ่ม Edit เป็นสีเทา */
+
+        }
+
+        /* สำหรับอุปกรณ์ระบบสัมผัส */
+        @media (hover: none) and (pointer: coarse) {
+            button.edit, button.delete {
+                font-size: 1em; /* ขนาดของปุ่มที่เพิ่มขึ้นสำหรับสัมผัส */
+    }
+    
+    /* ปุ่ม Edit และ Delete จะยังคงอยู่ในลำดับที่ถูกต้อง */
+    button.edit {
+        right: 25px;
+        color: rgb(104, 104, 104); /* ตั้งค่าสีของปุ่ม Edit เป็นสีเทา */
+    }
+    
+    button.delete {
+        right: 1px;
+        color: rgb(104, 104, 104); /* ตั้งค่าสีของปุ่ม Edit เป็นสีเทา */
+    }
+}
+    /*ปรับขนาดปุ่มไอคอนในการย้ายรายการ*/
+    .drag-handle {
+        background: none;
+        border: none;
+        cursor: move; /* เปลี่ยนรูป cursor เมื่อ hover */
+        padding-left: 1px;
+        padding-right: 5px;
+        padding-top: 5px;
+        padding-bottom: 5px;
+        display: inline-flex; /* ปรับขนาดให้เล็กพอดีกับไอคอน */
+        align-items: center;
+        justify-content: flex-start; /* จัดตำแหน่งให้ชิดซ้าย */
+        font-size: 12px; /* ขนาดของไอคอนยังคงเท่าเดิม */
+        margin-right: 4px; /* ระยะห่างด้านขวา */
+        margin-left: 0;
+        color: rgb(104, 104, 104); /* ตั้งค่าสีของปุ่ม Edit เป็นสีเทา */
+
+    }
+
+    /* ปรับขนาดไอคอนสำหรับอุปกรณ์ที่เป็นระบบสัมผัส */
+    @media (hover: none) and (pointer: coarse) {
+        .drag-handle {
+            font-size: 19px; /* ขนาดของไอคอนที่เพิ่มขึ้น */
+            padding-left: 2px;
+            padding-right: 3px;
+            padding-top: 8px;
+            padding-bottom: 6px;
+            background-color: none; /* เพิ่มสีพื้นหลังเล็กน้อย */
+            border-radius: none; /* เพิ่มมุมให้เรียบ */
         }
     }
 
-
-        button {
-            margin-left: 1%;
-        }
-
-        button.edit, button.delete {
-            border: none;
-            background: none;
-            cursor: pointer;
-            font-size: 1em;
-        }
-
-        .delete {
-            float: right;
-            font-size: 50%;
-            color: rgba(57, 57, 57, 0.765);
-        }
-
-        .edit {
-            float: right;
-            color: rgba(57, 57, 57, 0.765);
-        }
-
-        button.edit, button.delete {
-            border: none;
-            background: none;
-            cursor: pointer;
-            font-size: 1em;
-        }
 
 
     /*นาฬิกา*/
@@ -384,38 +404,6 @@
             padding: 3px 8px; /* ลดการจัดระยะห่างด้านใน */
         }
     }
-
-    /*ปรับขนาดปุ่มไอคอนในการย้ายรายการ*/
-    .drag-handle {
-        background: none;
-        border: none;
-        cursor: move; /* เปลี่ยนรูป cursor เมื่อ hover */
-        padding-left: 1px;
-        padding-right: 5px;
-        padding-top: 5px;
-        padding-bottom: 5px;
-        display: inline-flex; /* ปรับขนาดให้เล็กพอดีกับไอคอน */
-        align-items: center;
-        justify-content: flex-start; /* จัดตำแหน่งให้ชิดซ้าย */
-        font-size: 12px; /* ขนาดของไอคอนยังคงเท่าเดิม */
-        margin-right: 4px; /* ระยะห่างด้านขวา */
-        margin-left: 0;
-    }
-
-    /* ปรับขนาดไอคอนสำหรับอุปกรณ์ที่เป็นระบบสัมผัส */
-    @media (hover: none) and (pointer: coarse) {
-        .drag-handle {
-            font-size: 18px; /* ขนาดของไอคอนที่เพิ่มขึ้น */
-            padding-left: 1px;
-            padding-right: 8px;
-            padding-top: 7px;
-            padding-bottom: 7px;
-            background-color: none; /* เพิ่มสีพื้นหลังเล็กน้อย */
-            border-radius: 5px; /* เพิ่มมุมให้เรียบ */
-        }
-    }
-
-
 
   </style>
   
@@ -583,13 +571,6 @@ window.onload = function() {
     saveToLocalStorage(textEditor.value);
     textEditor.focus();
     }
-
-
-
-
-
-
-
 
         // ฟังก์ชันล้างรายการทั้งหมดใน clipList และลบข้อมูลจาก localStorage พร้อมการยืนยัน
         function clearAll() {
